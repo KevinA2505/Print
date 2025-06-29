@@ -71,7 +71,6 @@ public class Car implements Runnable {
 					}
 					rList = selectRoadList(node, next);
 				}
-
                                 if (rList != null && !LogicRoadList.isEmpty(rList)) {
                                         int steps = LogicRoadList.size(rList) + 1;
                                         int stepDelay = (steps > 0) ? totalDelay / steps : totalDelay;
