@@ -2,11 +2,11 @@ package domain;
 
 public class Incident {
 
-    private String type;       // "CHOQUE", "REPARACION", "CONGESTION"
+    private String type;
     private int row;
     private int col;
     private String description;
-    private Incident next;     // Enlace para lista enlazada
+    private Incident next;
 
     public Incident(String type, int row, int col, String description) {
         this.type = type;
