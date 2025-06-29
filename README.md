@@ -36,3 +36,21 @@ Ajusta `ruta/a/javafx/lib` a la ubicación donde tengas instaladas las librería
 
 El código contiene clases y utilidades básicas para la simulación de tráfico y su visualización. Algunas clases (por ejemplo `Incident` y `Road`) se encuentran vacías o en desarrollo. Este repositorio sirve de base para extender la simulación con más funcionalidades.
 
+## Uso rápido
+
+Una vez compilado, puedes ejecutar la aplicación con:
+
+```bash
+java -cp "bin:ruta/a/javafx/lib/*" business.Main
+```
+
+También puedes abrir el proyecto en tu IDE favorito (Eclipse, IntelliJ IDEA, etc.) y ejecutar la clase `business.Main` como una aplicación JavaFX para comenzar la simulación.
+
+## Cómo contribuir
+
+1. Haz un *fork* de este repositorio.
+2. Crea una rama con tus cambios o nuevas funciones.
+3. Envía un *pull request* para que podamos revisarlo.
+
+¡Cualquier aporte es bienvenido!
+
