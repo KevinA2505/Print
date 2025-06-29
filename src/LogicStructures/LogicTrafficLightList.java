@@ -20,13 +20,24 @@ public class LogicTrafficLightList {
 		list.setLast(list.getLast().getNext());
 	}
 
-	public static void toggleLights(TrafficLightList list) {
-		NodeTrafficLight current = list.getFirst();
-		while (current != null) {
-			current.setGreen(!current.isGreen());
-			current = current.getNext();
-		}
-	}
+        public static void toggleLights(TrafficLightList list) {
+                NodeTrafficLight current = list.getFirst();
+                while (current != null) {
+                        current.setGreen(!current.isGreen());
+                        current = current.getNext();
+                }
+        }
+
+        public static NodeTrafficLight findByDirection(TrafficLightList list, String direction) {
+                NodeTrafficLight current = list.getFirst();
+                while (current != null) {
+                        if (current.getDirection().equalsIgnoreCase(direction)) {
+                                return current;
+                        }
+                        current = current.getNext();
+                }
+                return null;
+        }
 
 	public static String printList(TrafficLightList list) {
 		String result = "";
