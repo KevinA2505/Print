@@ -451,35 +451,37 @@ public class MainController {
 		RoadLister.print(graph);
 	}
 
-	public void detectCongestedRoad() {
-		Graph graph = GraphRoad.getGraph();
-		if (graph == null)
-			return;
+        public void detectCongestedRoad() {
+                Graph graph = GraphRoad.getGraph();
+                if (graph == null)
+                        return;
 
-		NodeVertex current = graph.getVertices().getFirst();
-		while (current != null) {
-			NodeV nodo = current.getNodeV();
+                NodeVertex current = graph.getVertices().getFirst();
+                while (current != null) {
+                        NodeV nodo = current.getNodeV();
 
-			RoadList[] listas = { nodo.getxRoads(), nodo.getyRoads() };
+                        RoadList[] listas = { nodo.getxRoads(), nodo.getyRoads() };
 
-			for (RoadList lista : listas) {
-				if (lista == null || LogicRoadList.isEmpty(lista))
-					continue;
+                        for (RoadList lista : listas) {
+                                if (lista == null || LogicRoadList.isEmpty(lista))
+                                        continue;
 
-				int autosEnCalle = countingCarsInRoad(lista);
-				if (autosEnCalle >= 3 && autosEnCalle <= 5) {
-					orangeRoad(lista);
+                                int autosEnCalle = countingCarsInRoad(lista);
+                                if (autosEnCalle >= 3 && autosEnCalle <= 5) {
+                                        orangeRoad(lista);
 
-					NodeRoad inicio = lista.getFirst();
-					Incident inc = new Incident("CONGESTION", inicio.getI(), inicio.getJ(),
-							"Congestión detectada con " + autosEnCalle + " autos.");
-					incidentList.add(inc);
-					System.out.println("Congestión detectada: " + inc);
-				}
-			}
-			current = current.getNext();
-		}
-	}
+                                        NodeRoad inicio = lista.getFirst();
+                                        Incident inc = new Incident("CONGESTION", inicio.getI(), inicio.getJ(),
+                                                        "Congestión detectada con " + autosEnCalle + " autos.");
+                                        incidentList.add(inc);
+                                        System.out.println("Congestión detectada: " + inc);
+                                } else if (autosEnCalle < 3) {
+                                        clearOrangeRoad(lista);
+                                }
+                        }
+                        current = current.getNext();
+                }
+        }
 
 	private int countingCarsInRoad(RoadList lista) {
 		int count = 0;
@@ -495,18 +497,31 @@ public class MainController {
 		return count;
 	}
 
-	private void orangeRoad(RoadList lista) {
-		Platform.runLater(() -> {
-			NodeRoad current = lista.getFirst();
-			while (current != null) {
-				Button btn = getButtonAt(current.getI(), current.getJ());
-				if (btn != null) {
-					btn.setStyle("-fx-background-color: orange;");
-				}
-				current = current.getNext();
-			}
-		});
-	}
+        private void orangeRoad(RoadList lista) {
+                Platform.runLater(() -> {
+                        NodeRoad current = lista.getFirst();
+                        while (current != null) {
+                                Button btn = getButtonAt(current.getI(), current.getJ());
+                                if (btn != null) {
+                                        btn.setStyle("-fx-background-color: orange;");
+                                }
+                                current = current.getNext();
+                        }
+                });
+        }
+
+        private void clearOrangeRoad(RoadList lista) {
+                Platform.runLater(() -> {
+                        NodeRoad current = lista.getFirst();
+                        while (current != null) {
+                                Button btn = getButtonAt(current.getI(), current.getJ());
+                                if (btn != null) {
+                                        btn.setStyle("");
+                                }
+                                current = current.getNext();
+                        }
+                });
+        }
 
 	public void initCongestion() {
 		Thread congestionThread = new Thread(() -> {
