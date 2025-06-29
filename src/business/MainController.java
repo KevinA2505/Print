@@ -13,6 +13,7 @@ import Nodes.NodeV;
 import Nodes.NodeVertex;
 import java.util.Random;
 import Structures.Graph;
+import Structures.IncidentList;
 import Structures.RoadList;
 import Structures.VerticesList;
 import domain.Car;
@@ -25,6 +26,7 @@ import javafx.event.ActionEvent;
 
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,7 +43,15 @@ public class MainController {
 	@FXML
 	private TableView<Incident> tVIncidents;
 	@FXML
+	private TableColumn<Incident, String> tCIncidentName;
+	@FXML
+	private TableColumn<Incident, Integer> tCIncidentI;
+	@FXML
+	private TableColumn<Incident, Integer> tCIncidentJ;
+	@FXML
 	private TableView<RoadList> tVCongestedRoads;
+	@FXML
+	private TableColumn<RoadList, Integer> tCCongestedRoadCoord;
 	@FXML
 	private Button bEvent;
 	@FXML
@@ -55,7 +65,7 @@ public class MainController {
 
 	private Car[][] gridCarPositions = new Car[20][20]; // ajusta al tamaño de el grid real
 	private boolean[][] isBLockedRoad = new boolean[20][20];
-	private Structures.IncidentList incidentList = new Structures.IncidentList();
+	private IncidentList incidentList = new IncidentList();
 
 	@FXML
 	private void initialize() {
@@ -67,11 +77,22 @@ public class MainController {
 		draw();
 
 		// Controlador de semáforos al arrancar
-		Thread tLightThread = new Thread(new TrafficLightController(domain.GraphRoad.getGraph()));
+		Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
 		tLightThread.setDaemon(true);
 		tLightThread.start();
-		initEvents(); // Activar reparaciones naturales 🔁
+		initEvents();
 		initCongestion();
+		initTableEvents();
+		initTableRoads();
+	}
+
+	private void initTableEvents() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void initTableRoads() {
+		// TODO Auto-generated method stub
 
 	}
 
@@ -111,12 +132,12 @@ public class MainController {
 
 		if (isBLockedRoad[row][col]) {
 			System.out.println("Celda bloqueada (" + row + "," + col + ") - Car " + car.getId() + " no puede avanzar.");
-			return; // No se puede avanzar por estar bloqueada
+			return;
 		}
 
 		Car otro = gridCarPositions[row][col];
 		if (otro != null && otro != car) {
-			manejarChoque(row, col, car, otro);
+			operateIncident(row, col, car, otro);
 			return;
 		}
 
@@ -128,7 +149,11 @@ public class MainController {
 		// Asignar nueva posición
 		gridCarPositions[row][col] = car;
 
-		// Actualizar interfaz gráfica
+		/*
+		 * Aqui actualizamos interfaz por medio de runLater. La imagen del Car. Esto lo
+		 * que hace es posicionar en un lado la imagen, y kas coordenadas quedan a un
+		 * lado tambien.
+		 */
 		Platform.runLater(() -> {
 			Node prevTarget = null;
 			Node target = null;
@@ -163,7 +188,7 @@ public class MainController {
 		});
 	}
 
-	public void manejarChoque(int i, int j, Car c1, Car c2) {
+	public void operateIncident(int i, int j, Car c1, Car c2) {
 		isBLockedRoad[i][j] = true;
 
 		Incident choque = new Incident("CHOQUE", i, j,
@@ -295,7 +320,7 @@ public class MainController {
 		return null;
 	}
 
-	public void blockStreet(NodeRoad reparacion) {
+	public void blockStreet(NodeRoad road) {
 		Graph graph = GraphRoad.getGraph();
 		if (graph == null)
 			return;
@@ -310,16 +335,16 @@ public class MainController {
 			for (RoadList list : listas) {
 				NodeRoad temp = list.getFirst();
 
-				boolean pertenece = false;
+				boolean belong = false;
 				while (temp != null) {
-					if (temp.getI() == reparacion.getI() && temp.getJ() == reparacion.getJ()) {
-						pertenece = true;
+					if (temp.getI() == road.getI() && temp.getJ() == road.getJ()) {
+						belong = true;
 						break;
 					}
 					temp = temp.getNext();
 				}
 
-				if (pertenece) {
+				if (belong) {
 					// Bloquea toda la calle
 					temp = list.getFirst();
 					while (temp != null) {
@@ -354,7 +379,7 @@ public class MainController {
 									temp2 = temp2.getNext();
 								}
 
-								System.out.println("✅ Reparación finalizada y calle liberada.");
+								System.out.println("Reparación finalizada y calle liberada.");
 							});
 						}).start();
 
