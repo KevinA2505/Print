@@ -43,16 +43,12 @@ public class TrafficPatternGenerator {
 	}
 
 	private static int[] getVertexPositions(int step, int gridSize) {
-		int count = 0;
-		for (int i = 0; i < gridSize; i += step) {
-			count++;
-		}
-		int[] positions = new int[count];
-		int index = 0;
-		for (int i = 0; i < gridSize; i += step) {
-			positions[index++] = i;
-		}
-		return positions;
+	    int count = (gridSize + step - 1) / step;  // Math.ceil(gridSize / step)
+	    int[] positions = new int[count];
+	    for (int i = 0; i < count; i++) {
+	        positions[i] = i * step;
+	    }
+	    return positions;
 	}
 
 	private static int[] getVerticesInRow(int row, int step, int gridSize) {

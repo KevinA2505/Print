@@ -85,7 +85,6 @@ public class Car implements Runnable {
 							origin = findNode(path[i], g); // nodo actual
 //							destination = this.destination; // mismo destino
 
-							// Reiniciar el bucle exterior con nueva ruta
 							run(); // puede haber problemas con recursión infinita
 							return;
 						}
