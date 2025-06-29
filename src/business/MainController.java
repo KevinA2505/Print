@@ -76,6 +76,10 @@ public class MainController {
 	}
 
 	private void draw() {
+		/*
+		 * Con 7, por ejemplo, se desborda el grid en la ventana, pero el código
+		 * funciona igualmente.
+		 */
 		int a = sSize.getValue(); // tamaño 3 a 5
 		GridPane g = RoadsGrid.generateGrid(a);
 		grid = g;
@@ -110,7 +114,6 @@ public class MainController {
 			return; // No se puede avanzar por estar bloqueada
 		}
 
-		// CHOQUE DETECTION
 		Car otro = gridCarPositions[row][col];
 		if (otro != null && otro != car) {
 			manejarChoque(row, col, car, otro);
