@@ -41,7 +41,7 @@ public class Car implements Runnable {
 
 		while (true) {
 			int[] path = Dijkstra.buildPath(origin.getData(), destination.getData(), g);
-                        boolean recalcRoute = false;
+			boolean recalcRoute = false;
 
 			System.out.print("Ruta Dijkstra: ");
 			for (int i = 0; i < path.length; i++) {
@@ -71,42 +71,43 @@ public class Car implements Runnable {
 					}
 					rList = selectRoadList(node, next);
 				}
-                                if (rList != null && !LogicRoadList.isEmpty(rList)) {
-                                        int steps = LogicRoadList.size(rList) + 1;
-                                        int stepDelay = (steps > 0) ? totalDelay / steps : totalDelay;
-                                        NodeRoad cursor = rList.getFirst();
+				if (rList != null && !LogicRoadList.isEmpty(rList)) {
+					int steps = LogicRoadList.size(rList) + 1;
+					int stepDelay = (steps > 0) ? totalDelay / steps : totalDelay;
+					NodeRoad cursor = rList.getFirst();
 
-                                        while (cursor != null) {
-                                                if (isRoadBlocked(cursor)) {
-                                                        System.out.println("Calle bloqueada en (" + cursor.getI() + "," + cursor.getJ() + ") para Car " + id + ". Recalculando ruta...");
+					while (cursor != null) {
+						if (isRoadBlocked(cursor)) {
+							System.out.println("Calle bloqueada en (" + cursor.getI() + "," + cursor.getJ()
+									+ ") para Car " + id + ". Recalculando ruta...");
 
-                                                        // Interrumpimos el camino actual
-                                                        origin = node; // nodo actual
-                                                        LogicQueue.pop(node.getCars());
-                                                        recalcRoute = true;
-                                                        break;
-                                                }
+							// Interrumpimos el camino actual
+							origin = node; // nodo actual
+							LogicQueue.pop(node.getCars());
+							recalcRoute = true;
+							break;
+						}
 
-                                                if (controller != null) {
-                                                        controller.updateCarPosition(lastRow, lastCol, cursor.getI(), cursor.getJ(), this);
-                                                        lastRow = cursor.getI();
-                                                        lastCol = cursor.getJ();
-                                                }
+						if (controller != null) {
+							controller.updateCarPosition(lastRow, lastCol, cursor.getI(), cursor.getJ(), this);
+							lastRow = cursor.getI();
+							lastCol = cursor.getJ();
+						}
 
-                                                try {
-                                                        Thread.sleep(stepDelay);
-                                                } catch (InterruptedException e) {
-                                                        Thread.currentThread().interrupt();
-                                                        return;
-                                                }
+						try {
+							Thread.sleep(stepDelay);
+						} catch (InterruptedException e) {
+							Thread.currentThread().interrupt();
+							return;
+						}
 
-                                                System.out.println(this + " -> (" + cursor.getI() + "," + cursor.getJ() + ")");
-                                                cursor = cursor.getNext();
-                                        }
+						System.out.println(this + " -> (" + cursor.getI() + "," + cursor.getJ() + ")");
+						cursor = cursor.getNext();
+					}
 
-                                        if (recalcRoute) {
-                                                break;
-                                        }
+					if (recalcRoute) {
+						break;
+					}
 
 					if (next != null && controller != null) {
 						waitForGreenLight(node, next); // espera semáforo
@@ -143,12 +144,12 @@ public class Car implements Runnable {
 				}
 
 				if (!recalcRoute) {
-                                        LogicQueue.pop(node.getCars());
-                                }
+					LogicQueue.pop(node.getCars());
+				}
 			}
-                        if (recalcRoute) {
-                                continue;
-                        }
+			if (recalcRoute) {
+				continue;
+			}
 
 			System.out.println("Ruta terminada.");
 
