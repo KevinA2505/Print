@@ -342,10 +342,10 @@ public class MainController {
 
 									calleBloqueada[k][m] = false;
 
-									Button btnClear = getButtonAt(i, j);
-									if (btnClear != null) {
-										btnClear.setGraphic(null);
-										btnClear.setStyle("");
+									Button bClear = getButtonAt(k, m);
+									if (bClear != null) {
+										bClear.setGraphic(null);
+										bClear.setStyle("");
 									}
 
 									temp2 = temp2.getNext();
