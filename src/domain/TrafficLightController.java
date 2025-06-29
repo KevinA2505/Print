@@ -27,8 +27,8 @@ public class TrafficLightController implements Runnable {
                     	LogicTrafficLightList.toggleLights(tList);
                         //tList.toggleAll();
 
-                        NodeTrafficLight xLight = tList.getFirst();
-                        NodeTrafficLight yLight = xLight.getNext();
+                        NodeTrafficLight xLight = LogicTrafficLightList.findByDirection(tList, "X");
+                        NodeTrafficLight yLight = LogicTrafficLightList.findByDirection(tList, "Y");
 
                         Platform.runLater(() -> {
                             if (xLight.isGreen()) {
