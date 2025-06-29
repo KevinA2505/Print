@@ -1,0 +1,94 @@
+
+.root {
+    -fx-background-color: linear-gradient(to bottom, #f0f0f0, #d0d0d0);
+    -fx-border-color: #c0c0c0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-text-fill: #333;
+    -fx-padding: 4 8 4 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.05) , 2, 0.1 , 0 , 1 );
+}
+
+.button:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #999;
+}
+
+.button:pressed {
+    -fx-background-color: #e0e0e0;
+    -fx-border-color: #666;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4px;
+    -fx-padding: 4;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #ddd;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 28px;
+    -fx-background-color: transparent;
+}
+
+.table-view .table-row-cell {
+    -fx-border-color: #eaeaea;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+}
+
+.table-view .table-row-cell:filled:selected {
+    -fx-background-color: #e0e0e0;
+}
+
+.table-view .table-cell {
+    -fx-padding: 6px 10px;
+    -fx-text-fill: #333;
+}
+
+
+.spinner {
+    -fx-background-color: transparent;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 2 6;
+}
+
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: #333;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-shape: null;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #f0f0f0;
+}

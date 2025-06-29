@@ -1,0 +1,38 @@
+package Nodes;
+
+public class NodeTrafficLight {
+	private String direction; // "X" o "Y"
+	private boolean isGreen;
+	private NodeTrafficLight next;
+
+	public NodeTrafficLight(String direction, boolean isGreen) {
+		this.direction = direction;
+		this.isGreen = isGreen;
+		this.next = null;
+	}
+
+	public String getDirection() {
+		return direction;
+	}
+
+	public boolean isGreen() {
+		return isGreen;
+	}
+
+	public void setGreen(boolean isGreen) {
+		this.isGreen = isGreen;
+	}
+
+	public NodeTrafficLight getNext() {
+		return next;
+	}
+
+	public void setNext(NodeTrafficLight next) {
+		this.next = next;
+	}
+
+	@Override
+	public String toString() {
+		return direction + ": " + (isGreen ? "VERDE" : "ROJO");
+	}
+}
