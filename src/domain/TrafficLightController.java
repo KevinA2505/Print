@@ -24,7 +24,7 @@ public class TrafficLightController implements Runnable {
                     TrafficLightView tView = current.getNodeV().getTrafficLightView();
 
                     if (tList != null && tView != null) {
-                    	LogicTrafficLightList.toggleAll(tList);
+                    	LogicTrafficLightList.toggleLights(tList);
                         //tList.toggleAll();
 
                         NodeTrafficLight xLight = tList.getFirst();
