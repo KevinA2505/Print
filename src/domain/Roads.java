@@ -8,7 +8,8 @@ import Structures.RoadList;
 
 public final class Roads {
 
-	private Roads() {}
+	private Roads() {
+	}
 
 	public static void assignRoadsToVertices(int n, Graph roadGraph) {
 		if (roadGraph == null || roadGraph.getVertices() == null)

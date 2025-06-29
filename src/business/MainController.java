@@ -54,7 +54,7 @@ public class MainController {
 	private GridPane grid;
 
 	private Car[][] gridCarPositions = new Car[20][20]; // ajusta al tamaño de el grid real
-	private boolean[][] calleBloqueada = new boolean[20][20];
+	private boolean[][] isBLockedRoad = new boolean[20][20];
 	private Structures.IncidentList incidentList = new Structures.IncidentList();
 
 	@FXML
@@ -83,7 +83,7 @@ public class MainController {
 		// Crear grid dinámico según tamaño real de nodos
 		int gridSize = a * a + a + 1;
 		gridCarPositions = new Car[gridSize][gridSize];
-		calleBloqueada = new boolean[gridSize][gridSize];
+		isBLockedRoad = new boolean[gridSize][gridSize];
 
 		g.prefWidthProperty().bind(pGrid.widthProperty());
 		g.prefHeightProperty().bind(pGrid.heightProperty());
@@ -105,7 +105,7 @@ public class MainController {
 			return;
 		}
 
-		if (calleBloqueada[row][col]) {
+		if (isBLockedRoad[row][col]) {
 			System.out.println("Celda bloqueada (" + row + "," + col + ") - Car " + car.getId() + " no puede avanzar.");
 			return; // No se puede avanzar por estar bloqueada
 		}
@@ -161,7 +161,7 @@ public class MainController {
 	}
 
 	public void manejarChoque(int i, int j, Car c1, Car c2) {
-		calleBloqueada[i][j] = true;
+		isBLockedRoad[i][j] = true;
 
 		Incident choque = new Incident("CHOQUE", i, j,
 				"Auto " + c1.getId() + " y Auto " + c2.getId() + " colisionaron.");
@@ -194,7 +194,7 @@ public class MainController {
 					btnClear.setGraphic(null);
 					btnClear.setStyle("");
 				}
-				calleBloqueada[i][j] = false;
+				isBLockedRoad[i][j] = false;
 				System.out.println("Calle liberada en (" + i + "," + j + ")");
 			});
 		}).start();
@@ -322,7 +322,7 @@ public class MainController {
 					while (temp != null) {
 						int i = temp.getI();
 						int j = temp.getJ();
-						calleBloqueada[i][j] = true;
+						isBLockedRoad[i][j] = true;
 
 						// Al final de bloquearCallePorReparacion
 						final RoadList listCopia = list; // capturamos la lista final para el thread
@@ -340,7 +340,7 @@ public class MainController {
 									int k = temp2.getI();
 									int m = temp2.getJ();
 
-									calleBloqueada[k][m] = false;
+									isBLockedRoad[k][m] = false;
 
 									Button bClear = getButtonAt(k, m);
 									if (bClear != null) {
@@ -434,7 +434,7 @@ public class MainController {
 	}
 
 	public boolean isBlocked(int i, int j) { // metodo auxiliar
-		return calleBloqueada[i][j];
+		return isBLockedRoad[i][j];
 	}
 
 	// Event Listener on Button[#bShowGraph].onAction
@@ -451,37 +451,37 @@ public class MainController {
 		RoadLister.print(graph);
 	}
 
-        public void detectCongestedRoad() {
-                Graph graph = GraphRoad.getGraph();
-                if (graph == null)
-                        return;
+	public void detectCongestedRoad() {
+		Graph graph = GraphRoad.getGraph();
+		if (graph == null)
+			return;
 
-                NodeVertex current = graph.getVertices().getFirst();
-                while (current != null) {
-                        NodeV nodo = current.getNodeV();
+		NodeVertex current = graph.getVertices().getFirst();
+		while (current != null) {
+			NodeV nodo = current.getNodeV();
 
-                        RoadList[] listas = { nodo.getxRoads(), nodo.getyRoads() };
+			RoadList[] listas = { nodo.getxRoads(), nodo.getyRoads() };
 
-                        for (RoadList lista : listas) {
-                                if (lista == null || LogicRoadList.isEmpty(lista))
-                                        continue;
+			for (RoadList lista : listas) {
+				if (lista == null || LogicRoadList.isEmpty(lista))
+					continue;
 
-                                int autosEnCalle = countingCarsInRoad(lista);
-                                if (autosEnCalle >= 3 && autosEnCalle <= 5) {
-                                        orangeRoad(lista);
+				int autosEnCalle = countingCarsInRoad(lista);
+				if (autosEnCalle >= 3 && autosEnCalle <= 5) {
+					orangeRoad(lista);
 
-                                        NodeRoad inicio = lista.getFirst();
-                                        Incident inc = new Incident("CONGESTION", inicio.getI(), inicio.getJ(),
-                                                        "Congestión detectada con " + autosEnCalle + " autos.");
-                                        incidentList.add(inc);
-                                        System.out.println("Congestión detectada: " + inc);
-                                } else if (autosEnCalle < 3) {
-                                        clearOrangeRoad(lista);
-                                }
-                        }
-                        current = current.getNext();
-                }
-        }
+					NodeRoad inicio = lista.getFirst();
+					Incident inc = new Incident("CONGESTION", inicio.getI(), inicio.getJ(),
+							"Congestión detectada con " + autosEnCalle + " autos.");
+					incidentList.add(inc);
+					System.out.println("Congestión detectada: " + inc);
+				} else if (autosEnCalle < 3) {
+					clearOrangeRoad(lista);
+				}
+			}
+			current = current.getNext();
+		}
+	}
 
 	private int countingCarsInRoad(RoadList lista) {
 		int count = 0;
@@ -497,31 +497,31 @@ public class MainController {
 		return count;
 	}
 
-        private void orangeRoad(RoadList lista) {
-                Platform.runLater(() -> {
-                        NodeRoad current = lista.getFirst();
-                        while (current != null) {
-                                Button btn = getButtonAt(current.getI(), current.getJ());
-                                if (btn != null) {
-                                        btn.setStyle("-fx-background-color: orange;");
-                                }
-                                current = current.getNext();
-                        }
-                });
-        }
+	private void orangeRoad(RoadList lista) {
+		Platform.runLater(() -> {
+			NodeRoad current = lista.getFirst();
+			while (current != null) {
+				Button btn = getButtonAt(current.getI(), current.getJ());
+				if (btn != null) {
+					btn.setStyle("-fx-background-color: orange;");
+				}
+				current = current.getNext();
+			}
+		});
+	}
 
-        private void clearOrangeRoad(RoadList lista) {
-                Platform.runLater(() -> {
-                        NodeRoad current = lista.getFirst();
-                        while (current != null) {
-                                Button btn = getButtonAt(current.getI(), current.getJ());
-                                if (btn != null) {
-                                        btn.setStyle("");
-                                }
-                                current = current.getNext();
-                        }
-                });
-        }
+	private void clearOrangeRoad(RoadList lista) {
+		Platform.runLater(() -> {
+			NodeRoad current = lista.getFirst();
+			while (current != null) {
+				Button btn = getButtonAt(current.getI(), current.getJ());
+				if (btn != null) {
+					btn.setStyle("");
+				}
+				current = current.getNext();
+			}
+		});
+	}
 
 	public void initCongestion() {
 		Thread congestionThread = new Thread(() -> {
