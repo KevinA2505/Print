@@ -98,6 +98,8 @@ public class CarManager {
     }
 
     public Button getButtonAt(int i, int j) {
+        if (grid == null)
+            return null;
         for (Node node : grid.getChildren()) {
             Integer r = GridPane.getRowIndex(node);
             Integer c = GridPane.getColumnIndex(node);
