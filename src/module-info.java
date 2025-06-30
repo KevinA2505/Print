@@ -6,5 +6,7 @@ module Algoritmo_Project_2_v2 {
 	requires com.fasterxml.jackson.databind;
 	requires com.fasterxml.jackson.datatype.jsr310;
 	
-	opens business to javafx.graphics, javafx.fxml;
+        opens business to javafx.graphics, javafx.fxml;
+        opens domain to com.fasterxml.jackson.databind;
+        opens data to com.fasterxml.jackson.databind;
 }

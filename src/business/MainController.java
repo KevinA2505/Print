@@ -19,6 +19,7 @@ import domain.CongestedRoad;
 import domain.RoadLister;
 import domain.RoadsGrid;
 import domain.TrafficLightController;
+import data.JsonUtils;
 import javafx.event.ActionEvent;
 
 import javafx.scene.control.Spinner;
@@ -141,10 +142,17 @@ public class MainController {
 	 * LogicIncidentList puesto a que ahora se neceista el obsrvable para actualizar
 	 * la tabla.
 	 */
-	public void registerIncident(Incident inc) {
-		LogicIncidentList.add(inc, incidentList);
-		Platform.runLater(() -> incidentsObservable.add(inc));
-	}
+        public void registerIncident(Incident inc) {
+                LogicIncidentList.add(inc, incidentList);
+                Platform.runLater(() -> incidentsObservable.add(inc));
+
+                try {
+                        JsonUtils<Incident> ju = new JsonUtils<>("src/data/incidents.json");
+                        ju.save(inc);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+        }
 
 	private void draw() {
 		/*
