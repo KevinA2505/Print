@@ -1,37 +1,29 @@
 package Structures;
 
-import domain.Incident;
+import Nodes.NodeIncident;
 
 public class IncidentList {
-    private Incident first;
-    private Incident last;
+    private NodeIncident first;
+    private NodeIncident last;
 
     public IncidentList() {
         this.first = null;
         this.last = null;
     }
 
-    public void add(Incident incident) {
-        if (first == null) {
-            first = incident;
-            last = incident;
-        } else {
-            last.setNext(incident);
-            last = incident;
-        }
+    public NodeIncident getFirst() {
+        return first;
     }
 
-    public Incident getFirst() { return first; }
-
-    public boolean isEmpty() {
-        return first == null;
+    public void setFirst(NodeIncident first) {
+        this.first = first;
     }
 
-    public void printList() {
-        Incident current = first;
-        while (current != null) {
-            System.out.println(current.toString());
-            current = current.getNext();
-        }
+    public NodeIncident getLast() {
+        return last;
+    }
+
+    public void setLast(NodeIncident last) {
+        this.last = last;
     }
 }
