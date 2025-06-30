@@ -20,214 +20,196 @@ import java.util.Random;
 
 public class Car implements Runnable {
 
-	private static int counter = 0;
-	private static final int VELOCITY_STANDARD = 1000;
-	private final int id;
-	private NodeV origin;
-	private NodeV destination;
-	private CarManager controller;
-	private int lastRow = -1;
-	private int lastCol = -1;
+    private static int counter = 0;
+    private static final int VELOCITY_STANDARD = 1000;
+    private final int id;
+    private NodeV origin;
+    private NodeV destination;
+    private CarManager controller;
+    private int lastRow = -1;
+    private int lastCol = -1;
+    private volatile boolean active = true;
 
-	/*
-	 * Crea un auto con un origen y destino específicos. El manager controla las
-	 * actualizaciones de posición sobre el grid.
-	 */
-	public Car(NodeV origin, NodeV destination, CarManager controller) {
-		this.id = ++counter;
-		this.origin = origin;
-		this.destination = destination;
-		this.controller = controller;
-	}
+    public Car(NodeV origin, NodeV destination, CarManager controller) {
+        this.id = ++counter;
+        this.origin = origin;
+        this.destination = destination;
+        this.controller = controller;
+    }
 
-	/*
-	 * Hilo principal del auto. Calcula su ruta, avanza por las calles y recalcula
-	 * si encuentra una vía bloqueada.
-	 */
-	@Override
-	public void run() {
-		Graph g = GraphRoad.getGraph();
+    @Override
+    public void run() {
+        while (active) {
+            Graph g = GraphRoad.getGraph();
 
-		while (true) {
-			int[] path = Dijkstra.buildPath(origin.getData(), destination.getData(), g);
-			boolean recalcRoute = false;
+            while (active) {
+                int[] path = Dijkstra.buildPath(origin.getData(), destination.getData(), g);
+                boolean recalcRoute = false;
 
-			System.out.print("Ruta Dijkstra: ");
-			for (int i = 0; i < path.length; i++) {
-				System.out.print(path[i]);
-				if (i < path.length - 1)
-					System.out.print(" -> ");
-			}
-			System.out.println();
+                System.out.print("Ruta Dijkstra: ");
+                for (int i = 0; i < path.length; i++) {
+                    System.out.print(path[i]);
+                    if (i < path.length - 1) System.out.print(" -> ");
+                }
+                System.out.println();
 
-			for (int i = 0; i < path.length; i++) {
-				NodeV node = findNode(path[i], g);
-				if (node == null)
-					continue;
+                for (int i = 0; i < path.length; i++) {
+                    if (!active) return; // Detener inmediatamente si fue desactivado
 
-				System.out.println(this + " -> " + toCoord(node.getData()));
-				LogicQueue.add(this, node.getCars());
+                    NodeV node = findNode(path[i], g);
+                    if (node == null) continue;
 
-				int totalDelay = 0;
-				RoadList rList = null;
-				NodeV next = null;
+                    System.out.println(this + " -> " + toCoord(node.getData()));
+                    LogicQueue.add(this, node.getCars());
 
-				if (i < path.length - 1) {
-					next = findNode(path[i + 1], g);
-					NodeE edge = findEdge(node, next);
-					if (edge != null) {
-						totalDelay = (int) edge.getWeight() * VELOCITY_STANDARD;
-					}
-					rList = selectRoadList(node, next);
-				}
-				if (rList != null && !LogicRoadList.isEmpty(rList)) {
-					int steps = LogicRoadList.size(rList) + 1;
-					int stepDelay = (steps > 0) ? totalDelay / steps : totalDelay;
-					NodeRoad cursor = rList.getFirst();
+                    int totalDelay = 0;
+                    RoadList rList = null;
+                    NodeV next = null;
 
-					while (cursor != null) {
-						if (isRoadBlocked(cursor)) {
-							System.out.println("Calle bloqueada en (" + cursor.getI() + "," + cursor.getJ()
-									+ ") para Car " + id + ". Recalculando ruta...");
+                    if (i < path.length - 1) {
+                        next = findNode(path[i + 1], g);
+                        NodeE edge = findEdge(node, next);
+                        if (edge != null) totalDelay = (int) edge.getWeight() * VELOCITY_STANDARD;
+                        rList = selectRoadList(node, next);
+                    }
 
-							// Interrumpimos el camino actual
-							origin = node; // nodo actual
-							LogicQueue.pop(node.getCars());
-							recalcRoute = true;
-							break;
-						}
+                    if (rList != null && !LogicRoadList.isEmpty(rList)) {
+                        int steps = LogicRoadList.size(rList) + 1;
+                        int stepDelay = (steps > 0) ? totalDelay / steps : totalDelay;
+                        NodeRoad cursor = rList.getFirst();
 
-						if (controller != null) {
-							controller.updateCarPosition(lastRow, lastCol, cursor.getI(), cursor.getJ(), this);
-							lastRow = cursor.getI();
-							lastCol = cursor.getJ();
-						}
+                        while (cursor != null) {
+                            if (!active) return; // Detener en medio del recorrido
 
-						try {
-							Thread.sleep(stepDelay);
-						} catch (InterruptedException e) {
-							Thread.currentThread().interrupt();
-							return;
-						}
+                            if (isRoadBlocked(cursor)) {
+                                System.out.println("Calle bloqueada en (" + cursor.getI() + "," + cursor.getJ() +
+                                        ") para Car " + id + ". Recalculando ruta...");
+                                origin = node;
+                                LogicQueue.pop(node.getCars());
+                                recalcRoute = true;
+                                break;
+                            }
 
-						System.out.println(this + " -> (" + cursor.getI() + "," + cursor.getJ() + ")");
-						cursor = cursor.getNext();
-					}
+                            if (controller != null) {
+                                controller.updateCarPosition(lastRow, lastCol, cursor.getI(), cursor.getJ(), this);
+                                lastRow = cursor.getI();
+                                lastCol = cursor.getJ();
+                            }
 
-					if (recalcRoute) {
-						break;
-					}
+                            try {
+                                Thread.sleep(stepDelay);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                return;
+                            }
 
-					if (next != null && controller != null) {
-						waitForGreenLight(node, next); // espera semáforo
-						int nrow = next.getData() / 1000;
-						int ncol = next.getData() % 1000;
-						controller.updateCarPosition(lastRow, lastCol, nrow, ncol, this);
-						lastRow = nrow;
-						lastCol = ncol;
-						next.setOcupado(false); // liberar intersección
+                            System.out.println(this + " -> (" + cursor.getI() + "," + cursor.getJ() + ")");
+                            cursor = cursor.getNext();
+                        }
 
-					}
+                        if (recalcRoute) break;
 
-					try {
-						Thread.sleep(stepDelay);
-					} catch (InterruptedException e) {
-						Thread.currentThread().interrupt();
-						return;
-					}
+                        if (next != null && controller != null) {
+                            waitForGreenLight(node, next);
+                            int nrow = next.getData() / 1000;
+                            int ncol = next.getData() % 1000;
+                            controller.updateCarPosition(lastRow, lastCol, nrow, ncol, this);
+                            lastRow = nrow;
+                            lastCol = ncol;
+                            next.setOcupado(false);
+                        }
 
-				} else {
-					if (i < path.length - 1 && next != null && controller != null) {
-						waitForGreenLight(node, next); // espera semáforo
-						int nrow = next.getData() / 1000;
-						int ncol = next.getData() % 1000;
-						controller.updateCarPosition(lastRow, lastCol, nrow, ncol, this);
-						lastRow = nrow;
-						lastCol = ncol;
-						next.setOcupado(false);
+                        try {
+                            Thread.sleep(stepDelay);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
 
-					}
+                    } else {
+                        if (i < path.length - 1 && next != null && controller != null) {
+                            waitForGreenLight(node, next);
+                            int nrow = next.getData() / 1000;
+                            int ncol = next.getData() % 1000;
+                            controller.updateCarPosition(lastRow, lastCol, nrow, ncol, this);
+                            lastRow = nrow;
+                            lastCol = ncol;
+                            next.setOcupado(false);
+                        }
 
-					try {
-						Thread.sleep(totalDelay);
-					} catch (InterruptedException e) {
-						Thread.currentThread().interrupt();
-						return;
-					}
-				}
+                        try {
+                            Thread.sleep(totalDelay);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
+                    }
 
-				if (!recalcRoute) {
-					LogicQueue.pop(node.getCars());
-				}
-			}
-			if (recalcRoute) {
-				continue;
-			}
+                    if (!recalcRoute) LogicQueue.pop(node.getCars());
+                }
 
-			System.out.println("Ruta terminada.");
+                if (recalcRoute) continue;
 
-			origin = destination;
-			destination = getRandomDestination(origin, g);
-		}
-	}
+                System.out.println("Ruta terminada.");
 
-	/*
-	 * Consulta al manager si la calle indicada está bloqueada por un incidente.
-	 */
-	private boolean isRoadBlocked(NodeRoad r) {
-		if (controller == null)
-			return false;
-		return controller.isBlocked(r.getI(), r.getJ());
-	}
+                origin = destination;
+                destination = getRandomDestination(origin, g);
+            }
+        }
+        System.out.println(this + " detenido tras el choque o finalización.");
+    }
 
-	/*
-	 * Espera hasta que el semáforo permita el paso hacia el nodo destino y la
-	 * intersección esté libre.
-	 */
-	private void waitForGreenLight(NodeV from, NodeV to) {
-		while (true) {
-			if (canPass(from, to) && !to.isOcupado()) {
-				to.setOcupado(true); // Entrar a la intersección
-				break;
-			}
+    public void deactivate() {
+        this.active = false;
+    }
 
-			try {
-				Thread.sleep(100); // espera pasiva
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				break;
-			}
-		}
-	}
+    public boolean isActive() { //  método para que CarManager pueda consultar si el carro no está "muerto"
+        return active;
+    }
 
-	/*
-	 * Verifica el estado de los semáforos del nodo destino para saber si el auto
-	 * puede continuar su trayectoria.
-	 */
+    private boolean isRoadBlocked(NodeRoad r) {
+        if (controller == null) return false;
+        return controller.isBlocked(r.getI(), r.getJ());
+    }
+
+    private void waitForGreenLight(NodeV from, NodeV to) {
+        while (true) {
+            if (!active) return;
+            if (canPass(from, to) && !to.isOcupado()) {
+                to.setOcupado(true);
+                break;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
+
 	private boolean canPass(NodeV from, NodeV to) {
-		int fromRow = from.getData() / 1000;
-		int fromCol = from.getData() % 1000;
-		int toRow = to.getData() / 1000;
-		int toCol = to.getData() % 1000;
+	    int fromRow = from.getData() / 1000;
+	    int fromCol = from.getData() % 1000;
+	    int toRow = to.getData() / 1000;
+	    int toCol = to.getData() % 1000;
 
-		TrafficLightList lights = to.getTrafficLights();
-		if (lights == null)
-			return false;
+	    TrafficLightList lights = to.getTrafficLights();
+	    if (lights == null) return false;
 
-		NodeTrafficLight xLight = LogicTrafficLightList.findByDirection(lights, "X");
-		NodeTrafficLight yLight = LogicTrafficLightList.findByDirection(lights, "Y");
+	    NodeTrafficLight xLight = LogicTrafficLightList.findByDirection(lights, "X");
+	    NodeTrafficLight yLight = LogicTrafficLightList.findByDirection(lights, "Y");
 
-		if (fromRow == toRow)
-			return xLight != null && xLight.isGreen(); // E-O u O-E
-		if (fromCol == toCol)
-			return yLight != null && yLight.isGreen(); // N-S o S-N
+	    if (fromRow == toRow)
+	        return xLight != null && xLight.isGreen(); // E-O u O-E
+	    if (fromCol == toCol)
+	        return yLight != null && yLight.isGreen(); // N-S o S-N
 
-		return false;
+	    return false;
 	}
 
-	/*
-	 * Devuelve la lista de calles que conectan los dos nodos indicados.
-	 */
+
 	private RoadList selectRoadList(NodeV originV, NodeV destinationV) {
 		int oRow = originV.getData() / 1000;
 		int oCol = originV.getData() % 1000;
@@ -241,10 +223,6 @@ public class Car implements Runnable {
 		return null;
 	}
 
-	/*
-	 * Busca y devuelve el nodo del grafo cuyo identificador coincide con el valor
-	 * proporcionado.
-	 */
 	private NodeV findNode(int data, Graph g) {
 		if (g.getVertices() == null)
 			return null;
@@ -257,9 +235,6 @@ public class Car implements Runnable {
 		return null;
 	}
 
-	/*
-	 * Devuelve la arista que conecta los nodos dados o null si no existe.
-	 */
 	private NodeE findEdge(NodeV origin, NodeV destination) {
 		if (origin == null || origin.getEdges() == null)
 			return null;
@@ -290,19 +265,12 @@ public class Car implements Runnable {
 		return "Car " + id;
 	}
 
-	/*
-	 * Convierte el identificador numérico en coordenadas de fila y columna.
-	 */
 	private static String toCoord(int id) {
 		int row = id / 1000;
 		int col = id % 1000;
 		return "(" + row + "," + col + ")";
 	}
 
-	/*
-	 * Escoge un nuevo destino aleatorio distinto al actual para que el auto
-	 * continúe circulando por el grafo.
-	 */
 	private NodeV getRandomDestination(NodeV current, Graph g) {
 		VerticesList vList = g.getVertices();
 		if (vList == null)

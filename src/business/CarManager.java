@@ -22,9 +22,6 @@ import domain.Incident;
 
 public class CarManager {
 	private GridPane grid;
-	/*
-	 * Valor por defecto para quitarse de encima algun desborde.
-	 */
 	private Car[][] gridCarPositions = new Car[20][20];
 	private boolean[][] blockedRoad = new boolean[20][20];
 	private MainController controller;
@@ -39,18 +36,38 @@ public class CarManager {
 		blockedRoad = new boolean[gridSize][gridSize];
 	}
 
-	/*
-	 * Se actualiza la posición de Car. se setea la imagen. instance of para saber
-	 * si el nodo es un Button y se castea para usar sus métodos.
-	 */
 	public synchronized void updateCarPosition(int prevRow, int prevCol, int row, int col, Car car) {
-		if (grid == null)
-			return;
+        if (grid == null) return;
 
-		if (row < 0 || col < 0 || row >= gridCarPositions.length || col >= gridCarPositions[0].length) {
-			System.out.println("Coordenada fuera de rango: (" + row + "," + col + ")");
-			return;
-		}
+        // si el carro está inactivo, no actualizar la grilla
+        if (!car.isActive()) return;
+
+        if (blockedRoad[row][col]) {
+            System.out.println("Celda bloqueada (" + row + "," + col + ") - Car " + car.getId() + " no puede avanzar.");
+
+            // esto se hace porque como que aparece un carro fantasma después del choque, entonces
+            // esto borra el gráfico del último paso del carrito, basicamente, si se meueve, borre ese movimiento porque ya 
+            //chocó
+            
+            Platform.runLater(() -> {
+                Node prevTarget = null;
+                for (Node node : grid.getChildren()) {
+                    Integer r = GridPane.getRowIndex(node);
+                    Integer c = GridPane.getColumnIndex(node);
+                    if (r == null) r = 0;
+                    if (c == null) c = 0;
+                    if (r == prevRow && c == prevCol) prevTarget = node;
+                }
+                if (prevTarget instanceof Button) {
+                    ((Button) prevTarget).setGraphic(null);
+                    ((Button) prevTarget).setStyle("");
+                }
+            });
+
+            gridCarPositions[prevRow][prevCol] = null; // Limpia referencia de la celda previa
+            return;
+        }
+
 
 		if (blockedRoad[row][col]) {
 			System.out.println("Celda bloqueada (" + row + "," + col + ") - Car " + car.getId() + " no puede avanzar.");
@@ -103,9 +120,6 @@ public class CarManager {
 		});
 	}
 
-	/*
-	 * retorna el Button en la posición deseada.
-	 */
 	public Button getButtonAt(int i, int j) {
 		if (grid == null)
 			return null;
@@ -123,11 +137,6 @@ public class CarManager {
 		return null;
 	}
 
-	/*
-	 * Lo que hace este método es operar el incidente, bloqueando la calle donde
-	 * sucedió. Forma un objeto Incident que lleva los integrantes del evento y los
-	 * almacena en una lista para poder colocar eso en la tabla del programa.
-	 */
 	public void operateIncident(int i, int j, Car c1, Car c2) {
 		blockedRoad[i][j] = true;
 
@@ -146,8 +155,11 @@ public class CarManager {
 				btn.setGraphic(iv);
 			}
 		});
+		
+		c1.deactivate();
+	    c2.deactivate();
 
-		gridCarPositions[i][j] = null;
+		gridCarPositions[i][j] = null; // Borramos el carro de la grilla
 
 		new Thread(() -> {
 			try {
@@ -168,10 +180,6 @@ public class CarManager {
 		}).start();
 	}
 
-	/*
-	 * Método para el evento de reparación de calle. Toma toda la calle y le agrega
-	 * imagenes. Bloquea la calla con el boolean.
-	 */
 	public void blockStreet(NodeRoad road) {
 		Graph graph = GraphRoad.getGraph();
 		if (graph == null)
@@ -252,18 +260,10 @@ public class CarManager {
 
 	}
 
-	/*
-	 * Para saber si en i y j pos está bloqueado.
-	 */
 	public boolean isBlocked(int i, int j) {
 		return blockedRoad[i][j];
 	}
 
-	/*
-	 * genera el Objeto Car, el hilo. El Car se adentra al grafo. Puede andar en
-	 * colas y NodeV. Se coloca de manera aleatoria en los vértices, no en las
-	 * calles en si.
-	 */
 	public void generateCar() {
 		Graph graph = GraphRoad.getGraph();
 		if (graph == null || graph.getVertices() == null)

@@ -63,15 +63,16 @@ public class MainController {
 	private CarManager carManager;
 	private EventManager eventManager;
 	private CongestionManager congestionManager;
+	
+	public void setInitialCarCount(int count) {
+        // Si draw() ya corrio en initialize(), entonces carManager ya está creado.
+        // Generamos 'count' carros de una vez
+        for (int i = 0; i < count; i++) {
+            carManager.generateCar();
+        }
+    }
 
-	private Thread trafficLightThread;
 
-	/*
-	 * Incia el spinner, hasta 5 porque en 6 y 7 se desborda de la ventaa. Igual el
-	 * código funciona para esos valores, auqneu se limita por temas visuales.
-	 * Tambien se dibuja el grafo. Tambien se llaman a inicar las tablas. Aqui se
-	 * generan los Manager. Aquí se inica el controlador de semaforos.
-	 */
 	@FXML
 	private void initialize() {
 		/*
@@ -86,20 +87,22 @@ public class MainController {
 
 		draw();
 
-		// Controlador de semáforos al arrancar
-		trafficLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
-		trafficLightThread.setDaemon(true);
-		trafficLightThread.start();
+		initTrafficLights();
 
 		eventManager.initEvents();
 		congestionManager.initCongestion();
 		initTableEvents();
 		initTableRoads();
 	}
+	
+	/* Crea un hilo de semáforos para el grafo actual */
+    private void initTrafficLights() {
+        Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
+        tLightThread.setDaemon(true);
+        tLightThread.start();
+    }
 
-	/*
-	 * Tabla de eventos, donde se carga el tipo de evento y las cooredenadas.
-	 */
+
 	@SuppressWarnings("unchecked")
 	private void initTableEvents() {
 		tCIncidentName = new TableColumn<>("Type");
@@ -121,10 +124,6 @@ public class MainController {
 		}
 	}
 
-	/*
-	 * Aqui se inicia la tabla de las calles con mayor número de carros. Se guarda
-	 * las coordenadas más la cantidad ce Car en ella.
-	 */
 	@SuppressWarnings("unchecked")
 	private void initTableRoads() {
 		tCCongestedRoadCoord = new TableColumn<>("Road");
@@ -147,9 +146,6 @@ public class MainController {
 		Platform.runLater(() -> incidentsObservable.add(inc));
 	}
 
-	/*
-	 * Se dibuja el grafo en el GridPane usando el método generateGrid de RoadsGrid.
-	 */
 	private void draw() {
 		/*
 		 * Con 7, por ejemplo, se desborda el grid en la ventana, pero el código
@@ -172,12 +168,9 @@ public class MainController {
 		g.minHeightProperty().bind(pGrid.heightProperty());
 
 		pGrid.getChildren().setAll(g);
+		
+		 initTrafficLights();
 
-		// Reiniciar control de semáforos para la nueva cuadrícula
-		Thread newTrafficLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
-		newTrafficLightThread.setDaemon(true);
-		newTrafficLightThread.start();
-		trafficLightThread = newTrafficLightThread;
 	}
 
 	// Event Listener on Button[#bEvent].onAction
