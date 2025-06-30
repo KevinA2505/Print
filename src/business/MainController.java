@@ -19,9 +19,6 @@ import domain.CongestedRoad;
 import domain.RoadLister;
 import domain.RoadsGrid;
 import domain.TrafficLightController;
-import business.CarManager;
-import business.EventManager;
-import business.CongestionManager;
 import javafx.event.ActionEvent;
 
 import javafx.scene.control.Spinner;
@@ -59,40 +56,40 @@ public class MainController {
 	@FXML
 	private Button bRoads;
 
-        private GridPane grid;
+	private GridPane grid;
 
-        private IncidentList incidentList = new IncidentList();
-        private ObservableList<Incident> incidentsObservable = FXCollections.observableArrayList();
-        private ObservableList<CongestedRoad> congestedObservable = FXCollections.observableArrayList();
+	private IncidentList incidentList = new IncidentList();
+	private ObservableList<Incident> incidentsObservable = FXCollections.observableArrayList();
+	private ObservableList<CongestedRoad> congestedObservable = FXCollections.observableArrayList();
 
-        private CarManager carManager;
-        private EventManager eventManager;
-        private CongestionManager congestionManager;
+	private CarManager carManager;
+	private EventManager eventManager;
+	private CongestionManager congestionManager;
 
 	@FXML
 	private void initialize() {
 		/*
 		 * Estableceré un limite de 5 por un tema de espacio en la ventana
 		 */
-                sSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 5, 3));
-                sSize.valueProperty().addListener((o, v, n) -> draw());
+		sSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 5, 3));
+		sSize.valueProperty().addListener((o, v, n) -> draw());
 
-                carManager = new CarManager(this);
-                eventManager = new EventManager(carManager);
-                congestionManager = new CongestionManager(carManager, this, congestedObservable);
+		carManager = new CarManager(this);
+		eventManager = new EventManager(carManager);
+		congestionManager = new CongestionManager(carManager, this, congestedObservable);
 
-                draw();
+		draw();
 
-                // Controlador de semáforos al arrancar
-                Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
-                tLightThread.setDaemon(true);
-                tLightThread.start();
+		// Controlador de semáforos al arrancar
+		Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
+		tLightThread.setDaemon(true);
+		tLightThread.start();
 
-                eventManager.initEvents();
-                congestionManager.initCongestion();
-                initTableEvents();
-                initTableRoads();
-        }
+		eventManager.initEvents();
+		congestionManager.initCongestion();
+		initTableEvents();
+		initTableRoads();
+	}
 
 	@SuppressWarnings("unchecked")
 	private void initTableEvents() {
@@ -144,13 +141,13 @@ public class MainController {
 		 */
 		int a = sSize.getValue(); // tamaño 3 a 5
 		GridPane g = RoadsGrid.generateGrid(a);
-                grid = g;
+		grid = g;
 
-                // Crear grid dinámico según tamaño real de nodos
-                int gridSize = a * a + a + 1;
-                if (carManager != null) {
-                        carManager.initGrid(g, gridSize);
-                }
+		// Crear grid dinámico según tamaño real de nodos
+		int gridSize = a * a + a + 1;
+		if (carManager != null) {
+			carManager.initGrid(g, gridSize);
+		}
 
 		g.prefWidthProperty().bind(pGrid.widthProperty());
 		g.prefHeightProperty().bind(pGrid.heightProperty());
@@ -162,24 +159,21 @@ public class MainController {
 		pGrid.getChildren().setAll(g);
 	}
 
-        // Event Listener on Button[#bEvent].onAction
-        @FXML
-        public void toChooseEvent(ActionEvent event) {
-                if (eventManager != null) {
-                        eventManager.chooseEvent();
-                }
-        }
+	// Event Listener on Button[#bEvent].onAction
+	@FXML
+	public void toChooseEvent(ActionEvent event) {
+		if (eventManager != null) {
+			eventManager.chooseEvent();
+		}
+	}
 
-        // Event Listener on Button[#bGenerateCar].onAction
-        @FXML
-        public void toAddCar(ActionEvent event) {
-                if (carManager != null) {
-                        carManager.generateCar();
-                }
-        }
-
-
-
+	// Event Listener on Button[#bGenerateCar].onAction
+	@FXML
+	public void toAddCar(ActionEvent event) {
+		if (carManager != null) {
+			carManager.generateCar();
+		}
+	}
 
 	// Event Listener on Button[#bShowGraph].onAction
 	@FXML
@@ -194,7 +188,5 @@ public class MainController {
 		Graph graph = GraphRoad.getGraph();
 		RoadLister.print(graph);
 	}
-
-        
 
 }
