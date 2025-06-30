@@ -129,7 +129,7 @@ public class MainController {
 	 * LogicIncidentList puesto a que ahora se neceista el obsrvable para actualizar
 	 * la tabla.
 	 */
-	private void registerIncident(Incident inc) {
+	public void registerIncident(Incident inc) {
 		LogicIncidentList.add(inc, incidentList);
 		Platform.runLater(() -> incidentsObservable.add(inc));
 	}
