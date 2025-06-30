@@ -64,6 +64,12 @@ public class MainController {
 	private EventManager eventManager;
 	private CongestionManager congestionManager;
 
+	/*
+	 * Incia el spinner, hasta 5 porque en 6 y 7 se desborda de la ventaa. Igual el
+	 * código funciona para esos valores, auqneu se limita por temas visuales.
+	 * Tambien se dibuja el grafo. Tambien se llaman a inicar las tablas. Aqui se
+	 * generan los Manager. Aquí se inica el controlador de semaforos.
+	 */
 	@FXML
 	private void initialize() {
 		/*
@@ -89,6 +95,9 @@ public class MainController {
 		initTableRoads();
 	}
 
+	/*
+	 * Tabla de eventos, donde se carga el tipo de evento y las cooredenadas.
+	 */
 	@SuppressWarnings("unchecked")
 	private void initTableEvents() {
 		tCIncidentName = new TableColumn<>("Type");
@@ -110,6 +119,10 @@ public class MainController {
 		}
 	}
 
+	/*
+	 * Aqui se inicia la tabla de las calles con mayor número de carros. Se guarda
+	 * las coordenadas más la cantidad ce Car en ella.
+	 */
 	@SuppressWarnings("unchecked")
 	private void initTableRoads() {
 		tCCongestedRoadCoord = new TableColumn<>("Road");
@@ -132,6 +145,9 @@ public class MainController {
 		Platform.runLater(() -> incidentsObservable.add(inc));
 	}
 
+	/*
+	 * Se dibuja el grafo en el GridPane usando el método generateGrid de RoadsGrid.
+	 */
 	private void draw() {
 		/*
 		 * Con 7, por ejemplo, se desborda el grid en la ventana, pero el código
