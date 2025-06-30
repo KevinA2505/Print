@@ -12,6 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+/*
+ * Reciclaje
+ */
 public class JsonUtils<T> { // generic class
 
 	private String filePath; // JSON path for process.
