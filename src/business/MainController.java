@@ -57,9 +57,9 @@ public class MainController {
 	@FXML
 	private TableColumn<Incident, Integer> tCIncidentJ;
 	@FXML
-    private TableView<CongestedRoad> tVCongestedRoads;
-    @FXML
-    private TableColumn<CongestedRoad, String> tCCongestedRoadCoord;
+	private TableView<CongestedRoad> tVCongestedRoads;
+	@FXML
+	private TableColumn<CongestedRoad, String> tCCongestedRoadCoord;
 	@FXML
 	private Button bEvent;
 	@FXML
@@ -72,15 +72,10 @@ public class MainController {
 	private GridPane grid;
 
 	private Car[][] gridCarPositions = new Car[20][20]; // ajusta al tamaño de el grid real
-    private boolean[][] isBLockedRoad = new boolean[20][20];
-    private IncidentList incidentList = new IncidentList();
-    private ObservableList<Incident> incidentsObservable = FXCollections.observableArrayList();
-    private ObservableList<CongestedRoad> congestedObservable = FXCollections.observableArrayList();
-
-    private void registerIncident(Incident inc) {
-            LogicIncidentList.add(inc, incidentList);
-            Platform.runLater(() -> incidentsObservable.add(inc));
-    }
+	private boolean[][] isBLockedRoad = new boolean[20][20];
+	private IncidentList incidentList = new IncidentList();
+	private ObservableList<Incident> incidentsObservable = FXCollections.observableArrayList();
+	private ObservableList<CongestedRoad> congestedObservable = FXCollections.observableArrayList();
 
 	@FXML
 	private void initialize() {
@@ -101,38 +96,48 @@ public class MainController {
 		initTableRoads();
 	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	private void initTableEvents() {
-            tCIncidentName = new TableColumn<>("Type");
-            tCIncidentName.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getType()));
+		tCIncidentName = new TableColumn<>("Type");
+		tCIncidentName.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getType()));
 
-            tCIncidentI = new TableColumn<>("Row");
-            tCIncidentI.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRow()).asObject());
+		tCIncidentI = new TableColumn<>("Row");
+		tCIncidentI.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRow()).asObject());
 
-            tCIncidentJ = new TableColumn<>("Col");
-            tCIncidentJ.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getCol()).asObject());
+		tCIncidentJ = new TableColumn<>("Col");
+		tCIncidentJ.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getCol()).asObject());
 
-            tVIncidents.getColumns().setAll(tCIncidentName, tCIncidentI, tCIncidentJ);
-            tVIncidents.setItems(incidentsObservable);
+		tVIncidents.getColumns().setAll(tCIncidentName, tCIncidentI, tCIncidentJ);
+		tVIncidents.setItems(incidentsObservable);
 
-            NodeIncident curr = incidentList.getFirst();
-            while (curr != null) {
-                    incidentsObservable.add(curr.getIncident());
-                    curr = curr.getNext();
-            }
-    }
+		NodeIncident curr = incidentList.getFirst();
+		while (curr != null) {
+			incidentsObservable.add(curr.getIncident());
+			curr = curr.getNext();
+		}
+	}
 
-    @SuppressWarnings("unchecked")
-    private void initTableRoads() {
-            tCCongestedRoadCoord = new TableColumn<>("Road");
-            tCCongestedRoadCoord.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCoord()));
+	@SuppressWarnings("unchecked")
+	private void initTableRoads() {
+		tCCongestedRoadCoord = new TableColumn<>("Road");
+		tCCongestedRoadCoord.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCoord()));
 
-            TableColumn<CongestedRoad, Integer> carsCol = new TableColumn<>("Cars");
-            carsCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getCars()).asObject());
+		TableColumn<CongestedRoad, Integer> carsCol = new TableColumn<>("Cars");
+		carsCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getCars()).asObject());
 
-            tVCongestedRoads.getColumns().setAll(tCCongestedRoadCoord, carsCol);
-            tVCongestedRoads.setItems(congestedObservable);
-    }
+		tVCongestedRoads.getColumns().setAll(tCCongestedRoadCoord, carsCol);
+		tVCongestedRoads.setItems(congestedObservable);
+	}
+
+	/*
+	 * Este método se interpuso a la lógica anterior donde solo se aplicaba
+	 * LogicIncidentList puesto a que ahora se neceista el obsrvable para actualizar
+	 * la tabla.
+	 */
+	private void registerIncident(Incident inc) {
+		LogicIncidentList.add(inc, incidentList);
+		Platform.runLater(() -> incidentsObservable.add(inc));
+	}
 
 	private void draw() {
 		/*
@@ -212,6 +217,9 @@ public class MainController {
 			}
 
 			if (prevTarget instanceof Button) {
+				/*
+				 * COn esto el programa sabe que NOde es un Button Object.
+				 */
 				((Button) prevTarget).setGraphic(null);
 				((Button) prevTarget).setStyle("");
 			}
@@ -229,10 +237,10 @@ public class MainController {
 	public void operateIncident(int i, int j, Car c1, Car c2) {
 		isBLockedRoad[i][j] = true;
 
-            Incident choque = new Incident("CHOQUE", i, j,
-                            "Auto " + c1.getId() + " y Auto " + c2.getId() + " colisionaron.");
-            registerIncident(choque);
-            System.out.println("CHOQUE DETECTADO: " + choque.toString());
+		Incident choque = new Incident("CHOQUE", i, j,
+				"Auto " + c1.getId() + " y Auto " + c2.getId() + " colisionaron.");
+		registerIncident(choque);
+		System.out.println("CHOQUE DETECTADO: " + choque.toString());
 
 		Platform.runLater(() -> {
 			Button btn = getButtonAt(i, j);
@@ -422,9 +430,9 @@ public class MainController {
 						}).start();
 
 						// Agregar incidente
-                                                Incident r = new Incident("REPARACION", i, j, "Reparación en calle (" + i + "," + j + ")");
-                                                registerIncident(r);
-                                                System.out.println("Reparación en (" + i + "," + j + ")");
+						Incident r = new Incident("REPARACION", i, j, "Reparación en calle (" + i + "," + j + ")");
+						registerIncident(r);
+						System.out.println("Reparación en (" + i + "," + j + ")");
 
 						// Mostrar imagen visual
 						final Button btn = getButtonAt(i, j);
@@ -517,61 +525,61 @@ public class MainController {
 		RoadLister.print(graph);
 	}
 
-        public void detectCongestedRoad() {
-                Graph graph = GraphRoad.getGraph();
-                if (graph == null)
-                        return;
+	public void detectCongestedRoad() {
+		Graph graph = GraphRoad.getGraph();
+		if (graph == null)
+			return;
 
-                ObservableList<CongestedRoad> temp = FXCollections.observableArrayList();
+		ObservableList<CongestedRoad> temp = FXCollections.observableArrayList();
 
-                NodeVertex current = graph.getVertices().getFirst();
-                while (current != null) {
-                        NodeV nodo = current.getNodeV();
+		NodeVertex current = graph.getVertices().getFirst();
+		while (current != null) {
+			NodeV nodo = current.getNodeV();
 
 			RoadList[] listas = { nodo.getxRoads(), nodo.getyRoads() };
 
 			for (RoadList lista : listas) {
-                                if (lista == null || LogicRoadList.isEmpty(lista))
-                                        continue;
+				if (lista == null || LogicRoadList.isEmpty(lista))
+					continue;
 
-                                int autosEnCalle = countingCarsInRoad(lista);
-                                if (autosEnCalle > 0) {
-                                        NodeRoad head = lista.getFirst();
-                                        if (head != null) {
-                                                temp.add(new CongestedRoad(head.getI(), head.getJ(), autosEnCalle));
-                                        }
-                                }
-                                if (autosEnCalle >= 3 && autosEnCalle <= 5) {
-                                        orangeRoad(lista);
+				int autosEnCalle = countingCarsInRoad(lista);
+				if (autosEnCalle > 0) {
+					NodeRoad head = lista.getFirst();
+					if (head != null) {
+						temp.add(new CongestedRoad(head.getI(), head.getJ(), autosEnCalle));
+					}
+				}
+				if (autosEnCalle >= 3 && autosEnCalle <= 5) {
+					orangeRoad(lista);
 
 					NodeRoad inicio = lista.getFirst();
-                                        Incident inc = new Incident("CONGESTION", inicio.getI(), inicio.getJ(),
-                                                        "Congestión detectada con " + autosEnCalle + " autos.");
-                                        registerIncident(inc);
-                                        System.out.println("Congestión detectada: " + inc);
+					Incident inc = new Incident("CONGESTION", inicio.getI(), inicio.getJ(),
+							"Congestión detectada con " + autosEnCalle + " autos.");
+					registerIncident(inc);
+					System.out.println("Congestión detectada: " + inc);
 				} else if (autosEnCalle < 3) {
 					clearOrangeRoad(lista);
 				}
 			}
-                        current = current.getNext();
-                }
+			current = current.getNext();
+		}
 
-                // ordenar por cantidad de autos de forma descendente
-                for (int i = 0; i < temp.size(); i++) {
-                        for (int j = i + 1; j < temp.size(); j++) {
-                                CongestedRoad a = temp.get(i);
-                                CongestedRoad b = temp.get(j);
-                                if (a.getCars() < b.getCars()) {
-                                        temp.set(i, b);
-                                        temp.set(j, a);
-                                }
-                        }
-                }
+		// ordenar por cantidad de autos de forma descendente
+		for (int i = 0; i < temp.size(); i++) {
+			for (int j = i + 1; j < temp.size(); j++) {
+				CongestedRoad a = temp.get(i);
+				CongestedRoad b = temp.get(j);
+				if (a.getCars() < b.getCars()) {
+					temp.set(i, b);
+					temp.set(j, a);
+				}
+			}
+		}
 
-                Platform.runLater(() -> {
-                        congestedObservable.setAll(temp);
-                });
-        }
+		Platform.runLater(() -> {
+			congestedObservable.setAll(temp);
+		});
+	}
 
 	private int countingCarsInRoad(RoadList lista) {
 		int count = 0;
