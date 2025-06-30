@@ -37,6 +37,11 @@ public class Car implements Runnable {
         this.controller = controller;
     }
 
+    /*
+     * Por medio de Dijkstra se genera origen y destino.
+     * Verifica por semaforos o incidentes.
+     * El sleep se divide por pasos y peso.
+     */
     @Override
     public void run() {
         while (active) {
@@ -172,6 +177,9 @@ public class Car implements Runnable {
         return controller.isBlocked(r.getI(), r.getJ());
     }
 
+    /*
+     * método para esperar cuando el semforo bloquea el paso.
+     */
     private void waitForGreenLight(NodeV from, NodeV to) {
         while (true) {
             if (!active) return;
@@ -189,6 +197,9 @@ public class Car implements Runnable {
     }
 
 
+    /*
+     * se puede ir por este lado?
+     */
 	private boolean canPass(NodeV from, NodeV to) {
 	    int fromRow = from.getData() / 1000;
 	    int fromCol = from.getData() % 1000;

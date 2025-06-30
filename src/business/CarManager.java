@@ -262,10 +262,16 @@ public class CarManager {
 
 	}
 
+	/*
+	 * verifica si una calle está bloqueada.
+	 */
 	public boolean isBlocked(int i, int j) {
 		return blockedRoad[i][j];
 	}
 
+	/*
+	 * Aqui se genera el hilo de Car. de forma random.
+	 */
 	public void generateCar() {
 		Graph graph = GraphRoad.getGraph();
 		if (graph == null || graph.getVertices() == null)

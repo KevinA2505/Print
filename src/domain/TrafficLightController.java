@@ -33,6 +33,9 @@ public class TrafficLightController implements Runnable {
         }
     }
 
+    /*
+     * De manera cicilica se generan la condicion de cada semáforo.
+     */
     private void manageTrafficLightCycle(NodeV node) {
         Random rand = new Random();
         TrafficLightList tList = node.getTrafficLights();

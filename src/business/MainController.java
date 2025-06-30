@@ -73,6 +73,10 @@ public class MainController {
 		}
 	}
 
+	/*
+	 * inicia las tablas. Inicia un spinner, limite hasya 6 porque de 6 y 7 se
+	 * desborda el grid, aunque la lógica funciona con cualquier tamaño.
+	 */
 	@FXML
 	private void initialize() {
 		/*
@@ -102,6 +106,10 @@ public class MainController {
 		tLightThread.start();
 	}
 
+	
+	/*
+	 * Estos métodos incian las tablas.
+	 */
 	@SuppressWarnings("unchecked")
 	private void initTableEvents() {
 		tCIncidentName = new TableColumn<>("Type");
