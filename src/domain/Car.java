@@ -13,7 +13,7 @@ import Structures.Graph;
 import Structures.RoadList;
 import Structures.TrafficLightList;
 import Structures.VerticesList;
-import business.MainController;
+import business.CarManager;
 
 import java.util.Random;
 
@@ -24,11 +24,11 @@ public class Car implements Runnable {
 	private final int id;
 	private NodeV origin;
 	private NodeV destination;
-	private MainController controller;
+    private CarManager controller;
 	private int lastRow = -1;
 	private int lastCol = -1;
 
-	public Car(NodeV origin, NodeV destination, MainController controller) {
+    public Car(NodeV origin, NodeV destination, CarManager controller) {
 		this.id = ++counter;
 		this.origin = origin;
 		this.destination = destination;
@@ -158,11 +158,11 @@ public class Car implements Runnable {
 		}
 	}
 
-	private boolean isRoadBlocked(NodeRoad r) {
-		if (controller == null)
-			return false;
-		return controller.isBlocked(r.getI(), r.getJ());
-	}
+    private boolean isRoadBlocked(NodeRoad r) {
+        if (controller == null)
+            return false;
+        return controller.isBlocked(r.getI(), r.getJ());
+    }
 
 	private void waitForGreenLight(NodeV from, NodeV to) {
 		while (!canPass(from, to)) {
