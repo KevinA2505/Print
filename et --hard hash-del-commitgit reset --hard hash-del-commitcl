@@ -1,0 +1,202 @@
+[33mcommit dfdbba27562279e6695656c7e6255098c4857002[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: 06c48a3 fde526d
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:48:02 2025 -0600
+
+    ADR
+
+[33mcommit 06c48a3e6b5116e528dd94be9922a08ed92d7693[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:45:54 2025 -0600
+
+    IDR
+
+[33mcommit fde526d2890183add375401314cfa6f90e521b97[m
+Merge: b16e291 960c1aa
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:44:44 2025 -0600
+
+    Refactorizar MainController y mover lógica a clases nuevas
+    
+    Clases nuevas con ideas diferentes. Para agilizar todo. Más práctico.
+
+[33mcommit 960c1aac948ffe706a421cc84f0b0bbc45c387ed[m
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:43:23 2025 -0600
+
+    Refactor MainController by delegating operations
+
+[33mcommit b16e291aedd94b6279e479732373750c0d295241[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:16:49 2025 -0600
+
+    He agregado comentarios sobre instanceof y el porque es necesario un caste en el NOde para poder utilizar métodos del Objeto Button del javafx.
+
+[33mcommit 9935e9835b9cc6cfb3bcc874a171ff95d2f07e88[m
+Merge: 454beba e1c8477
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:10:41 2025 -0600
+
+    Actualizar incidentlist con estructura estándar presentes en las demás listas.
+    
+    Refactoriza la listaIncidentList a su debido estado.
+
+[33mcommit e1c8477df4a456302ec968220ba68374d3e9fcec[m
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:07:07 2025 -0600
+
+    Refactor IncidentList with node and logic classes
+
+[33mcommit 454beba26ac1d1152a7d7560d821c314c0e08a1a[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 18:01:16 2025 -0600
+
+    He suprimido las advertencias de las tablas porque sé que no representan un problema.
+
+[33mcommit 836ad95bc21597a0936aebde39730c39aa87580c[m
+Merge: 51cc5ff 42f5fdf
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 17:55:02 2025 -0600
+
+    iniciar-tablas-para-eventos-y-calles
+    
+    Aquí ya desplegamos las tablas. Se ha generado una clase para guardar la info de las calles congestionadas porque todavía no teníamos eso. Ahora hemos cambiado lo que es incidentList.add por un método que hace eso más lo agrega al observable.
+
+[33mcommit 42f5fdf3b777c173cab0f703418b14f6cf4fdf69[m
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 17:47:32 2025 -0600
+
+    Add observable tables for incidents and congested roads
+
+[33mcommit 51cc5ff8eef77bb7594e2c122b81ecf705c07298[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 17:30:31 2025 -0600
+
+    He limpiado un poco el código
+
+[33mcommit 5c0fd5bcc2b2bf706da13cac160cf2c5eb905863[m
+Merge: 0483fb7 ec03e49
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 16:19:04 2025 -0600
+
+    Merge pull request #5 from KevinA2505/codex/actualizar-el-readme
+    
+    Actualizar README con instrucciones de uso y contribución
+
+[33mcommit ec03e4946a725adb60f63f0f0e2078c37dcb4ace[m
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 16:18:51 2025 -0600
+
+    docs: añadir secciones de uso rapido y contribucion
+
+[33mcommit 0483fb78120db82da6b369f803b70910411a3c06[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 16:06:09 2025 -0600
+
+    Reparaciones en el código del MainController
+
+[33mcommit 47fb46bc4d43880f89db18789547d99efa03c148[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 16:01:26 2025 -0600
+
+    He cambiado el nombre de una variable. Nada más
+
+[33mcommit 6f2c60ed713e8f20fce16d7f4c56bbbdf3fbd26d[m
+Merge: 4ad2dbb dc5a72a
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:59:44 2025 -0600
+
+    Merge pull request #4 from KevinA2505/codex/detect-congestion-clearance-and-update-buttons
+    
+    Congestión limpiada
+
+[33mcommit dc5a72ac1568ee3a409a04ce1034395f68390a9e[m
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:59:14 2025 -0600
+
+    Detect congestion clearing
+
+[33mcommit 4ad2dbb602f1c057111c1b4e14a9f5437d454a61[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:57:41 2025 -0600
+
+    Button bClear = getButtonAt(i, j); se ha cambiado a k,m
+
+[33mcommit 06fdc5ff8776c58a309f7fe3231c80741aaf2b24[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:38:48 2025 -0600
+
+    He arreglado unos detalles con relación a las impresiones en consola.
+
+[33mcommit 133bfc3224b70a56922ae55c1cb4cd276a3eccb4[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:36:10 2025 -0600
+
+    Identación corregida en Car.java
+
+[33mcommit c97c1bc1b52926cb550ed627dfa13aaf5f3c7914[m
+Merge: d34e089 48348ab
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:34:04 2025 -0600
+
+    Merge pull request #3 from KevinA2505/codex/replace-recursion-with-path-recalculation
+    
+    Re calcula la ruta sin necesidad de llamar run de nuevo de manera recursiva.
+
+[33mcommit 48348ab0f9fdcd6b90c6f07a58980ea6d109bbdd[m
+Merge: e115080 d34e089
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:33:31 2025 -0600
+
+    Merge branch 'main' into codex/replace-recursion-with-path-recalculation
+
+[33mcommit e11508044e58de49363a95276db88c38dcd59e1c[m
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:32:01 2025 -0600
+
+    fix: avoid recursive rerouting
+
+[33mcommit d34e089e7a1abef7ff400054e445f1ba3629a9e3[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 15:31:23 2025 -0600
+
+    Corregido getVertexPositions de TrafficPaternGenerator.
+
+[33mcommit 153be55e2fe89e9f1e4cfd3eba96ef7a76215a00[m
+Merge: 1ffb22d 2d0d918
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 14:38:26 2025 -0600
+
+    Merge pull request #1 from KevinA2505/codex/refactor-logic-for-xlight-and-ylight-assignment
+    
+    Implementación de la dirección en los semáforos. Cambio en el método toggleLights, con el fin  de usar fidByDirection
+
+[33mcommit 2d0d9186add0cb11d40ff5ca2c2134c836aaf719[m
+Author: KevinA2505 <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 14:37:10 2025 -0600
+
+    Add directional traffic light lookup
+
+[33mcommit 1ffb22dfadae1461125932a592116c80c030c896[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 14:25:16 2025 -0600
+
+    Cleaning
+
+[33mcommit 90ac6d78927815882afc6852c8c43693c676784d[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 13:11:32 2025 -0600
+
+    Cambios leves, como eliminar Road. He quitado comentarios innecesarios.
+
+[33mcommit 31bef35651361e347f42e91777213d18601c1600[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 13:03:37 2025 -0600
+
+    Project Upload
+
+[33mcommit 8e44ee945f9373f54ae8496c62a675f862313873[m
+Author: Kevin Vargas Miranda <kevinandresvm2505@gmail.com>
+Date:   Sun Jun 29 13:02:09 2025 -0600
+
+    first commit
