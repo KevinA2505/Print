@@ -3,12 +3,18 @@ package domain;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
+/*
+ * Vista simple para mostrar el estado de los semáforos en una intersección.
+ */
 public class TrafficLightView {
 	private Label xLight;
 	private Label yLight;
 	private StackPane container;
 
-	public TrafficLightView() {
+        /*
+         * Inicializa la vista con los dos semáforos X y Y superpuestos.
+         */
+        public TrafficLightView() {
 		xLight = new Label("X");
 		xLight.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-font-size: 9px;");
 		xLight.setPrefSize(18, 18);
@@ -22,15 +28,24 @@ public class TrafficLightView {
 		container.getChildren().addAll(xLight, yLight);
 	}
 
-	public Label getxLight() {
-		return xLight;
-	}
+        /*
+         * Semáforo horizontal.
+         */
+        public Label getxLight() {
+                return xLight;
+        }
 
-	public Label getyLight() {
-		return yLight;
-	}
+        /*
+         * Semáforo vertical.
+         */
+        public Label getyLight() {
+                return yLight;
+        }
 
-	public StackPane getContainer() {
-		return container;
-	}
+        /*
+         * Contenedor que agrupa los dos semáforos.
+         */
+        public StackPane getContainer() {
+                return container;
+        }
 }

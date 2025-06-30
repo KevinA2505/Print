@@ -10,16 +10,26 @@ import javafx.application.Platform;
 
 import java.util.Random;
 
+/*
+ * Controla de forma cíclica el estado de los semáforos de cada intersección.
+ */
 public class TrafficLightController implements Runnable {
     private Graph graph;
 
     private static final String GREEN_STYLE = "-fx-background-color: green; -fx-text-fill: white; -fx-font-size: 9px;";
     private static final String RED_STYLE = "-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 9px;";
 
+    /*
+     * Recibe el grafo con las intersecciones que poseen semáforos.
+     */
     public TrafficLightController(Graph graph) {
         this.graph = graph;
     }
 
+    /*
+     * Recorre cada intersección del grafo y lanza un hilo que gestiona su ciclo
+     * de semáforos.
+     */
     @Override
     public void run() {
         if (graph == null || graph.getVertices() == null) return;
@@ -33,6 +43,10 @@ public class TrafficLightController implements Runnable {
         }
     }
 
+    /*
+     * Ciclo que alterna el estado de los semáforos de un nodo con un retardo
+     * aleatorio entre cambios.
+     */
     private void manageTrafficLightCycle(NodeV node) {
         Random rand = new Random();
         TrafficLightList tList = node.getTrafficLights();

@@ -2,14 +2,20 @@ package Structures;
 
 import Nodes.NodeTrafficLight;
 
+/*
+ * Lista enlazada para almacenar los semáforos de una intersección.
+ */
 public class TrafficLightList {
 	private NodeTrafficLight first;
 	private NodeTrafficLight last;
 
-	public TrafficLightList() {
-		this.first = null;
-		this.last = null;
-	}
+        /*
+         * Inicializa la lista vacía.
+         */
+        public TrafficLightList() {
+                this.first = null;
+                this.last = null;
+        }
 
 	public NodeTrafficLight getFirst() {
 		return first;
@@ -27,7 +33,10 @@ public class TrafficLightList {
 		this.last = last;
 	}
 
-	public boolean isEmpty() {
-		return first == null;
-	}
+        /*
+         * Indica si no existe ningún semáforo en la lista.
+         */
+        public boolean isEmpty() {
+                return first == null;
+        }
 }
