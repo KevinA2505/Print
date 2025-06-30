@@ -62,7 +62,9 @@ public class MainController {
 
 	private CarManager carManager;
 	private EventManager eventManager;
-	private CongestionManager congestionManager;
+        private CongestionManager congestionManager;
+
+        private Thread trafficLightThread;
 
 	/*
 	 * Incia el spinner, hasta 5 porque en 6 y 7 se desborda de la ventaa. Igual el
@@ -84,10 +86,10 @@ public class MainController {
 
 		draw();
 
-		// Controlador de semáforos al arrancar
-		Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
-		tLightThread.setDaemon(true);
-		tLightThread.start();
+                // Controlador de semáforos al arrancar
+                trafficLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
+                trafficLightThread.setDaemon(true);
+                trafficLightThread.start();
 
 		eventManager.initEvents();
 		congestionManager.initCongestion();
@@ -169,8 +171,14 @@ public class MainController {
 		g.minWidthProperty().bind(pGrid.widthProperty());
 		g.minHeightProperty().bind(pGrid.heightProperty());
 
-		pGrid.getChildren().setAll(g);
-	}
+                pGrid.getChildren().setAll(g);
+
+                // Reiniciar control de semáforos para la nueva cuadrícula
+                Thread newTrafficLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
+                newTrafficLightThread.setDaemon(true);
+                newTrafficLightThread.start();
+                trafficLightThread = newTrafficLightThread;
+        }
 
 	// Event Listener on Button[#bEvent].onAction
 	@FXML
