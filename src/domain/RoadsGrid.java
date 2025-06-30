@@ -8,17 +8,13 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-/*
- * Encargada de construir visualmente el grid de calles e intersecciones y de
- * poblar el grafo con dichos vértices.
- */
 public class RoadsGrid {
 
-        /*
-         * Genera y devuelve el GridPane de botones que representan el mapa de
-         * calles. También inicializa el grafo correspondiente.
-         */
-        public static GridPane generateGrid(int n) {
+	/*
+	 * Genera y devuelve el GridPane de botones que representan el mapa de calles.
+	 * También inicializa el grafo correspondiente.
+	 */
+	public static GridPane generateGrid(int n) {
 		GraphRoad.resetGraph();
 		GridPane g = new GridPane();
 		int gridSize = n * n + n + 1;
@@ -73,33 +69,33 @@ public class RoadsGrid {
 		return g;
 	}
 
-        /*
-         * Determina si en la posición dada debe crearse un vértice del grafo.
-         */
-        private static boolean shouldCreateVertex(int row, int col, int n, int gridSize) {
+	/*
+	 * Determina si en la posición dada debe crearse un vértice del grafo.
+	 */
+	private static boolean shouldCreateVertex(int row, int col, int n, int gridSize) {
 		boolean isHorizontalRoad = isH(row, n);
 		boolean isVerticalRoad = isV(col, n);
 		return isHorizontalRoad && isVerticalRoad;
 	}
 
-        /*
-         * Genera un identificador único a partir de la fila y columna.
-         */
-        private static int generateVertexId(int row, int col) {
-                return row * 1000 + col;
-        }
+	/*
+	 * Genera un identificador único a partir de la fila y columna.
+	 */
+	private static int generateVertexId(int row, int col) {
+		return row * 1000 + col;
+	}
 
-        /*
-         * Indica si la fila corresponde a una calle horizontal.
-         */
-        private static boolean isH(int row, int n) {
-                return row % (n + 1) == 0;
-        }
+	/*
+	 * Indica si la fila corresponde a una calle horizontal.
+	 */
+	private static boolean isH(int row, int n) {
+		return row % (n + 1) == 0;
+	}
 
-        /*
-         * Indica si la columna corresponde a una avenida vertical.
-         */
-        private static boolean isV(int col, int n) {
-                return col % (n + 1) == 0;
-        }
+	/*
+	 * Indica si la columna corresponde a una avenida vertical.
+	 */
+	private static boolean isV(int col, int n) {
+		return col % (n + 1) == 0;
+	}
 }

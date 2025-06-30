@@ -18,11 +18,6 @@ import business.CarManager;
 
 import java.util.Random;
 
-/*
- * Representa un auto que recorre el grafo. Al implementar Runnable puede
- * ejecutarse en un hilo independiente y avanzar por las calles siguiendo la
- * ruta calculada.
- */
 public class Car implements Runnable {
 
 	private static int counter = 0;
@@ -30,27 +25,27 @@ public class Car implements Runnable {
 	private final int id;
 	private NodeV origin;
 	private NodeV destination;
-    private CarManager controller;
-    private int lastRow = -1;
-    private int lastCol = -1;
+	private CarManager controller;
+	private int lastRow = -1;
+	private int lastCol = -1;
 
-    /*
-     * Crea un auto con un origen y destino específicos. El manager controla las
-     * actualizaciones de posición sobre el grid.
-     */
-    public Car(NodeV origin, NodeV destination, CarManager controller) {
-        this.id = ++counter;
-        this.origin = origin;
-        this.destination = destination;
-        this.controller = controller;
-    }
+	/*
+	 * Crea un auto con un origen y destino específicos. El manager controla las
+	 * actualizaciones de posición sobre el grid.
+	 */
+	public Car(NodeV origin, NodeV destination, CarManager controller) {
+		this.id = ++counter;
+		this.origin = origin;
+		this.destination = destination;
+		this.controller = controller;
+	}
 
-    /*
-     * Hilo principal del auto. Calcula su ruta, avanza por las calles y
-     * recalcula si encuentra una vía bloqueada.
-     */
-    @Override
-    public void run() {
+	/*
+	 * Hilo principal del auto. Calcula su ruta, avanza por las calles y recalcula
+	 * si encuentra una vía bloqueada.
+	 */
+	@Override
+	public void run() {
 		Graph g = GraphRoad.getGraph();
 
 		while (true) {
@@ -176,66 +171,64 @@ public class Car implements Runnable {
 		}
 	}
 
-    /*
-     * Consulta al manager si la celda indicada está bloqueada por un incidente
-     * o mantenimiento.
-     */
-    private boolean isRoadBlocked(NodeRoad r) {
-        if (controller == null)
-            return false;
-        return controller.isBlocked(r.getI(), r.getJ());
-    }
-
-    /*
-     * Espera pasivamente hasta que el semáforo permita el paso hacia el nodo
-     * destino y la intersección esté libre.
-     */
-    private void waitForGreenLight(NodeV from, NodeV to) {
-        while (true) {
-            if (canPass(from, to) && !to.isOcupado()) {
-                to.setOcupado(true); // Entrar a la intersección
-                break;
-            }
-
-            try {
-                Thread.sleep(100); // espera pasiva
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
-        }
-    }
-
-
-        /*
-         * Verifica el estado de los semáforos del nodo destino para saber si el
-         * auto puede continuar su trayectoria.
-         */
-        private boolean canPass(NodeV from, NodeV to) {
-	    int fromRow = from.getData() / 1000;
-	    int fromCol = from.getData() % 1000;
-	    int toRow = to.getData() / 1000;
-	    int toCol = to.getData() % 1000;
-
-	    TrafficLightList lights = to.getTrafficLights();
-	    if (lights == null) return false;
-
-	    NodeTrafficLight xLight = LogicTrafficLightList.findByDirection(lights, "X");
-	    NodeTrafficLight yLight = LogicTrafficLightList.findByDirection(lights, "Y");
-
-	    if (fromRow == toRow)
-	        return xLight != null && xLight.isGreen(); // E-O u O-E
-	    if (fromCol == toCol)
-	        return yLight != null && yLight.isGreen(); // N-S o S-N
-
-	    return false;
+	/*
+	 * Consulta al manager si la calle indicada está bloqueada por un incidente.
+	 */
+	private boolean isRoadBlocked(NodeRoad r) {
+		if (controller == null)
+			return false;
+		return controller.isBlocked(r.getI(), r.getJ());
 	}
 
+	/*
+	 * Espera hasta que el semáforo permita el paso hacia el nodo destino y la
+	 * intersección esté libre.
+	 */
+	private void waitForGreenLight(NodeV from, NodeV to) {
+		while (true) {
+			if (canPass(from, to) && !to.isOcupado()) {
+				to.setOcupado(true); // Entrar a la intersección
+				break;
+			}
 
-        /*
-         * Devuelve la lista de calles que conectan los dos nodos indicados.
-         */
-        private RoadList selectRoadList(NodeV originV, NodeV destinationV) {
+			try {
+				Thread.sleep(100); // espera pasiva
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				break;
+			}
+		}
+	}
+
+	/*
+	 * Verifica el estado de los semáforos del nodo destino para saber si el auto
+	 * puede continuar su trayectoria.
+	 */
+	private boolean canPass(NodeV from, NodeV to) {
+		int fromRow = from.getData() / 1000;
+		int fromCol = from.getData() % 1000;
+		int toRow = to.getData() / 1000;
+		int toCol = to.getData() % 1000;
+
+		TrafficLightList lights = to.getTrafficLights();
+		if (lights == null)
+			return false;
+
+		NodeTrafficLight xLight = LogicTrafficLightList.findByDirection(lights, "X");
+		NodeTrafficLight yLight = LogicTrafficLightList.findByDirection(lights, "Y");
+
+		if (fromRow == toRow)
+			return xLight != null && xLight.isGreen(); // E-O u O-E
+		if (fromCol == toCol)
+			return yLight != null && yLight.isGreen(); // N-S o S-N
+
+		return false;
+	}
+
+	/*
+	 * Devuelve la lista de calles que conectan los dos nodos indicados.
+	 */
+	private RoadList selectRoadList(NodeV originV, NodeV destinationV) {
 		int oRow = originV.getData() / 1000;
 		int oCol = originV.getData() % 1000;
 		int dRow = destinationV.getData() / 1000;
@@ -248,11 +241,11 @@ public class Car implements Runnable {
 		return null;
 	}
 
-        /*
-         * Busca y devuelve el nodo del grafo cuyo identificador coincide con el
-         * valor proporcionado.
-         */
-        private NodeV findNode(int data, Graph g) {
+	/*
+	 * Busca y devuelve el nodo del grafo cuyo identificador coincide con el valor
+	 * proporcionado.
+	 */
+	private NodeV findNode(int data, Graph g) {
 		if (g.getVertices() == null)
 			return null;
 		NodeVertex curr = g.getVertices().getFirst();
@@ -264,65 +257,53 @@ public class Car implements Runnable {
 		return null;
 	}
 
-        /*
-         * Devuelve la arista que conecta los nodos dados o null si no existe.
-         */
-        private NodeE findEdge(NodeV origin, NodeV destination) {
-                if (origin == null || origin.getEdges() == null)
-                        return null;
-                Node current = origin.getEdges().getFirst();
-                while (current != null) {
-                        NodeE e = current.getNodeE();
-                        if (e.getDestination() == destination)
-                                return e;
-                        current = current.getNext();
-                }
-                return null;
-        }
+	/*
+	 * Devuelve la arista que conecta los nodos dados o null si no existe.
+	 */
+	private NodeE findEdge(NodeV origin, NodeV destination) {
+		if (origin == null || origin.getEdges() == null)
+			return null;
+		Node current = origin.getEdges().getFirst();
+		while (current != null) {
+			NodeE e = current.getNodeE();
+			if (e.getDestination() == destination)
+				return e;
+			current = current.getNext();
+		}
+		return null;
+	}
 
-        /*
-         * Identificador único del auto.
-         */
-        public int getId() {
-                return id;
-        }
+	public int getId() {
+		return id;
+	}
 
-        /*
-         * Vértice actual donde se encuentra el auto.
-         */
-        public NodeV getOrigin() {
-                return origin;
-        }
+	public NodeV getOrigin() {
+		return origin;
+	}
 
-        /*
-         * Vértice objetivo al que se dirige.
-         */
-        public NodeV getDestination() {
-                return destination;
-        }
+	public NodeV getDestination() {
+		return destination;
+	}
 
-        /*
-         * Representación textual sencilla para depuración.
-         */
-        @Override
-        public String toString() {
-                return "Car " + id;
-        }
+	@Override
+	public String toString() {
+		return "Car " + id;
+	}
 
-        /*
-         * Convierte el identificador numérico en coordenadas de fila y columna.
-         */
-        private static String toCoord(int id) {
-                int row = id / 1000;
-                int col = id % 1000;
-                return "(" + row + "," + col + ")";
-        }
+	/*
+	 * Convierte el identificador numérico en coordenadas de fila y columna.
+	 */
+	private static String toCoord(int id) {
+		int row = id / 1000;
+		int col = id % 1000;
+		return "(" + row + "," + col + ")";
+	}
 
-        /*
-         * Escoge un nuevo destino aleatorio distinto al actual para que el auto
-         * continúe circulando por el grafo.
-         */
-        private NodeV getRandomDestination(NodeV current, Graph g) {
+	/*
+	 * Escoge un nuevo destino aleatorio distinto al actual para que el auto
+	 * continúe circulando por el grafo.
+	 */
+	private NodeV getRandomDestination(NodeV current, Graph g) {
 		VerticesList vList = g.getVertices();
 		if (vList == null)
 			return current;
