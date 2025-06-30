@@ -17,6 +17,8 @@ public class NodeV {
 
 	private TrafficLightList trafficLights;
 	private TrafficLightView trafficLightView;
+	
+	private boolean ocupado = false;
 
 	public NodeV(int data) {
 		this.data = data;
@@ -84,6 +86,14 @@ public class NodeV {
 
 	public void setTrafficLightView(TrafficLightView trafficLightView) {
 		this.trafficLightView = trafficLightView;
+	}
+	
+	public synchronized boolean isOcupado() {
+	    return ocupado;
+	}
+
+	public synchronized void setOcupado(boolean ocupado) {
+	    this.ocupado = ocupado;
 	}
 
 	@Override
