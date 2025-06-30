@@ -2,6 +2,7 @@ package domain;
 
 import LogicStructures.LogicQueue;
 import LogicStructures.LogicRoadList;
+import LogicStructures.LogicTrafficLightList;
 import LogicStructures.LogicVerticesList;
 import Nodes.Node;
 import Nodes.NodeE;
@@ -116,6 +117,8 @@ public class Car implements Runnable {
 						controller.updateCarPosition(lastRow, lastCol, nrow, ncol, this);
 						lastRow = nrow;
 						lastCol = ncol;
+						next.setOcupado(false); // liberar intersección
+
 					}
 
 					try {
@@ -133,6 +136,8 @@ public class Car implements Runnable {
 						controller.updateCarPosition(lastRow, lastCol, nrow, ncol, this);
 						lastRow = nrow;
 						lastCol = ncol;
+						next.setOcupado(false);
+
 					}
 
 					try {
@@ -164,37 +169,43 @@ public class Car implements Runnable {
         return controller.isBlocked(r.getI(), r.getJ());
     }
 
-	private void waitForGreenLight(NodeV from, NodeV to) {
-		while (!canPass(from, to)) {
-			try {
-				Thread.sleep(100); // espera pasiva
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				break;
-			}
-		}
-	}
+    private void waitForGreenLight(NodeV from, NodeV to) {
+        while (true) {
+            if (canPass(from, to) && !to.isOcupado()) {
+                to.setOcupado(true); // Entrar a la intersección
+                break;
+            }
+
+            try {
+                Thread.sleep(100); // espera pasiva
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
 
 	private boolean canPass(NodeV from, NodeV to) {
-		int fromRow = from.getData() / 1000;
-		int fromCol = from.getData() % 1000;
-		int toRow = to.getData() / 1000;
-		int toCol = to.getData() % 1000;
+	    int fromRow = from.getData() / 1000;
+	    int fromCol = from.getData() % 1000;
+	    int toRow = to.getData() / 1000;
+	    int toCol = to.getData() % 1000;
 
-		TrafficLightList lights = to.getTrafficLights();
-		if (lights == null)
-			return false;
+	    TrafficLightList lights = to.getTrafficLights();
+	    if (lights == null) return false;
 
-		NodeTrafficLight xLight = lights.getFirst(); // dirección X
-		NodeTrafficLight yLight = xLight.getNext(); // dirección Y
+	    NodeTrafficLight xLight = LogicTrafficLightList.findByDirection(lights, "X");
+	    NodeTrafficLight yLight = LogicTrafficLightList.findByDirection(lights, "Y");
 
-		if (fromRow == toRow)
-			return xLight != null && xLight.isGreen(); // si está verde pasa
-		if (fromCol == toCol)
-			return yLight != null && yLight.isGreen(); // igual
+	    if (fromRow == toRow)
+	        return xLight != null && xLight.isGreen(); // E-O u O-E
+	    if (fromCol == toCol)
+	        return yLight != null && yLight.isGreen(); // N-S o S-N
 
-		return false; // no movimiento recto
+	    return false;
 	}
+
 
 	private RoadList selectRoadList(NodeV originV, NodeV destinationV) {
 		int oRow = originV.getData() / 1000;
