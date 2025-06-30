@@ -64,15 +64,14 @@ public class MainController {
 	private CarManager carManager;
 	private EventManager eventManager;
 	private CongestionManager congestionManager;
-	
-	public void setInitialCarCount(int count) {
-        // Si draw() ya corrio en initialize(), entonces carManager ya está creado.
-        // Generamos 'count' carros de una vez
-        for (int i = 0; i < count; i++) {
-            carManager.generateCar();
-        }
-    }
 
+	public void setInitialCarCount(int count) {
+		// Si draw() ya corrio en initialize(), entonces carManager ya está creado.
+		// Generamos 'count' carros de una vez
+		for (int i = 0; i < count; i++) {
+			carManager.generateCar();
+		}
+	}
 
 	@FXML
 	private void initialize() {
@@ -95,14 +94,13 @@ public class MainController {
 		initTableEvents();
 		initTableRoads();
 	}
-	
-	/* Crea un hilo de semáforos para el grafo actual */
-    private void initTrafficLights() {
-        Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
-        tLightThread.setDaemon(true);
-        tLightThread.start();
-    }
 
+	/* Crea un hilo de semáforos para el grafo actual */
+	private void initTrafficLights() {
+		Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
+		tLightThread.setDaemon(true);
+		tLightThread.start();
+	}
 
 	@SuppressWarnings("unchecked")
 	private void initTableEvents() {
@@ -142,17 +140,17 @@ public class MainController {
 	 * LogicIncidentList puesto a que ahora se neceista el obsrvable para actualizar
 	 * la tabla.
 	 */
-        public void registerIncident(Incident inc) {
-                LogicIncidentList.add(inc, incidentList);
-                Platform.runLater(() -> incidentsObservable.add(inc));
+	public void registerIncident(Incident inc) {
+		LogicIncidentList.add(inc, incidentList);
+		Platform.runLater(() -> incidentsObservable.add(inc));
 
-                try {
-                        JsonUtils<Incident> ju = new JsonUtils<>("src/data/incidents.json");
-                        ju.save(inc);
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
-        }
+		try {
+			JsonUtils<Incident> ju = new JsonUtils<>("src/data/incidents.json");
+			ju.save(inc);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void draw() {
 		/*
@@ -176,8 +174,8 @@ public class MainController {
 		g.minHeightProperty().bind(pGrid.heightProperty());
 
 		pGrid.getChildren().setAll(g);
-		
-		 initTrafficLights();
+
+		initTrafficLights();
 
 	}
 
