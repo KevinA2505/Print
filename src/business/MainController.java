@@ -74,17 +74,20 @@ public class MainController {
 		/*
 		 * Estableceré un limite de 5 por un tema de espacio en la ventana
 		 */
-		sSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 5, 3));
-		sSize.valueProperty().addListener((o, v, n) -> draw());
-		draw();
+                sSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 5, 3));
+                sSize.valueProperty().addListener((o, v, n) -> draw());
 
-		// Controlador de semáforos al arrancar
-		Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
-		tLightThread.setDaemon(true);
-		tLightThread.start();
                 carManager = new CarManager(this);
                 eventManager = new EventManager(carManager);
                 congestionManager = new CongestionManager(carManager, this, congestedObservable);
+
+                draw();
+
+                // Controlador de semáforos al arrancar
+                Thread tLightThread = new Thread(new TrafficLightController(GraphRoad.getGraph()));
+                tLightThread.setDaemon(true);
+                tLightThread.start();
+
                 eventManager.initEvents();
                 congestionManager.initCongestion();
                 initTableEvents();
