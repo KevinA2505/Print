@@ -56,7 +56,6 @@ public class MainController {
 	@FXML
 	private Button bRoads;
 
-
 	private IncidentList incidentList = new IncidentList();
 	private ObservableList<Incident> incidentsObservable = FXCollections.observableArrayList();
 	private ObservableList<CongestedRoad> congestedObservable = FXCollections.observableArrayList();
@@ -139,7 +138,7 @@ public class MainController {
 		 * funciona igualmente.
 		 */
 		int a = sSize.getValue(); // tamaño 3 a 5
-                GridPane g = RoadsGrid.generateGrid(a);
+		GridPane g = RoadsGrid.generateGrid(a);
 
 		// Crear grid dinámico según tamaño real de nodos
 		int gridSize = a * a + a + 1;
