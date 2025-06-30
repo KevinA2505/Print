@@ -38,7 +38,7 @@ public class RoadsGrid {
 						b.setPrefSize(2, 2);
 					} else {
 						b.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-						b.setMinSize(5, 5); // opcional
+						b.setMinSize(5, 5); // opcional, establece el tamaño minimo del boton en 5 de alto y ancho
 
 					}
 					g.add(b, col, row); // 1️⃣ Primero el botón
