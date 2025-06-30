@@ -19,6 +19,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import Structures.Graph;
 import Structures.IncidentList;
+import Nodes.NodeIncident;
+import LogicStructures.LogicIncidentList;
 import Structures.RoadList;
 import Structures.VerticesList;
 import domain.Car;
@@ -76,7 +78,7 @@ public class MainController {
     private ObservableList<CongestedRoad> congestedObservable = FXCollections.observableArrayList();
 
     private void registerIncident(Incident inc) {
-            incidentList.add(inc);
+            LogicIncidentList.add(inc, incidentList);
             Platform.runLater(() -> incidentsObservable.add(inc));
     }
 
@@ -113,9 +115,9 @@ public class MainController {
             tVIncidents.getColumns().setAll(tCIncidentName, tCIncidentI, tCIncidentJ);
             tVIncidents.setItems(incidentsObservable);
 
-            Incident curr = incidentList.getFirst();
+            NodeIncident curr = incidentList.getFirst();
             while (curr != null) {
-                    incidentsObservable.add(curr);
+                    incidentsObservable.add(curr.getIncident());
                     curr = curr.getNext();
             }
     }
