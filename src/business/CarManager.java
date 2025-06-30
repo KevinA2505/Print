@@ -19,6 +19,8 @@ import Nodes.NodeVertex;
 import domain.Car;
 import domain.GraphRoad;
 import domain.Incident;
+import data.CarInfo;
+import data.JsonUtils;
 
 public class CarManager {
 	private GridPane grid;
@@ -295,13 +297,22 @@ public class CarManager {
 		if (startV == null || endVertex == null)
 			return;
 
-		Car car = new Car(startV.getNodeV(), endVertex.getNodeV(), this);
+                Car car = new Car(startV.getNodeV(), endVertex.getNodeV(), this);
 
-		LogicQueue.add(car, startV.getNodeV().getCars());
+                try {
+                        CarInfo info = new CarInfo(car.getId(), startV.getNodeV().getData(),
+                                        endVertex.getNodeV().getData());
+                        JsonUtils<CarInfo> ju = new JsonUtils<>("src/data/cars.json");
+                        ju.save(info);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
 
-		Thread carThread = new Thread(car);
-		carThread.setDaemon(true);
-		carThread.start();
+                LogicQueue.add(car, startV.getNodeV().getCars());
+
+                Thread carThread = new Thread(car);
+                carThread.setDaemon(true);
+                carThread.start();
 	}
 
 	public Car[][] getGridCarPositions() {
