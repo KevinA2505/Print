@@ -99,7 +99,8 @@ public class MainController {
 		initTableRoads();
 	}
 
-    private void initTableEvents() {
+    @SuppressWarnings("unchecked")
+	private void initTableEvents() {
             tCIncidentName = new TableColumn<>("Type");
             tCIncidentName.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getType()));
 
@@ -119,6 +120,7 @@ public class MainController {
             }
     }
 
+    @SuppressWarnings("unchecked")
     private void initTableRoads() {
             tCCongestedRoadCoord = new TableColumn<>("Road");
             tCCongestedRoadCoord.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCoord()));
